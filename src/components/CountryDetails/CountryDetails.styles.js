@@ -18,37 +18,46 @@ export const InfoWrapper = styled.div`
     max-width: 600px;
   }
 
-  @media (width > 1150px) {
+  @media (width > 1115px) {
     flex-direction: row;
     justify-content: space-around;
   }
 `;
 
 export const Info = styled.div`
-  max-width: 45%;
+  max-width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 50px auto auto auto;
   gap: 30px 30px;
   
   @media (width < 1150px) {
-    max-width: 60%;
-  }
-
-  @media (width < 1050px) {
-    max-width: 65%;
-  }
-
-  @media (width < 950px) {
+    min-width: 60%;
     max-width: 70%;
   }
 
-  @media (width < 880px) {
+  @media (width < 1115px) {
+    min-width: 60%;
+    max-width: 70%;
+  }
+
+  @media (width < 1050px) {
+    min-width: 65%;
+    max-width: 70%;
+  }
+
+  @media (width < 950px) {
+    min-width: 70%;
     max-width: 75%;
   }
 
+  @media (width < 880px) {
+    min-width: 80%;
+    max-width: 85%;
+  }
+
   @media (width < 775px) {
-    max-width: 90%;
+    min-width: 90%;
   }
 
   @media (width < 700px) {
@@ -89,7 +98,7 @@ export const StyledBorderCountries = styled.div`
     font-weight: 600
   }
 
-  @media (width < 1150px) {
+  @media (width < 1115px) {
     flex-wrap: wrap;
   }
 `;
