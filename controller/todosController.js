@@ -47,8 +47,8 @@ const updateTodo = async (req, res) => {
 
     if (req.body?.title) todo.title = title;
 
-    const updatedTodo = await todo.save();
-
+    await todo.save();
+    
     const todos = await Todo.find();
     if (!todos) return res.status(204).json({ message: "No todo have found." });
 
