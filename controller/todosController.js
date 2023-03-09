@@ -20,8 +20,12 @@ const createTodo = async (req, res) => {
   if (!title) return res.status(400).json({ message: `Title is required.` });
 
   try {
-    const newTodo = await Todo.create({ title: req.body.title });
-    res.status(201).json(newTodo);
+    await Todo.create({ title: req.body.title });
+
+    const todos = await Todo.find();
+    if (!todos) return res.status(204).json({ message: "No todo have found." });
+    res.status(201).json(todos);
+    
   } catch (err) {
     console.log(err);
   }
@@ -44,7 +48,11 @@ const updateTodo = async (req, res) => {
     if (req.body?.title) todo.title = title;
 
     const updatedTodo = await todo.save();
-    res.json(updatedTodo);
+
+    const todos = await Todo.find();
+    if (!todos) return res.status(204).json({ message: "No todo have found." });
+
+    res.json(todos);
   } catch (err) {
     console.log(err);
   }
@@ -64,7 +72,11 @@ const deleteTodo = async (req, res) => {
         .json({ message: `No matches todo with this Id.`});
     
       const result = await todo.deleteOne();
-      res.json(result);
+
+      const todos = await Todo.find();
+      if (!todos) return res.status(204).json({ message: "No todo have found." });
+
+      res.json(todos);
   } catch (err) {
     console.log(err);
   }
