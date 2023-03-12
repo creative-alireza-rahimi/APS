@@ -1,19 +1,22 @@
 import { useState, useRef, useEffect } from "react";
-import { ToDoPage, ToDoList, ToDoInput, ToDoAction, Button, Title, ToDoItems, ToDoItemsStyle, FontAwesomeIconStyle } from "./ToDo.style";
+import { ToDoPage, ToDoList, ToDoInput, ToDoAction, Button, Description, FormButtons, CancelButton, Title, ToDoItems, ToDoItemsStyle, FontAwesomeIconStyle } from "./ToDo.style";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import { getToDo, createToDo, deleteToDo, updateToDo } from "../../services/services"
+import { Message } from "../Message";
+
 
 export const ToDo = () => {
     const ref = useRef(null);
 
     const [isUpdate, setIsUpdate] = useState(false);
     const [update, setUpdate] = useState({});
-    const [todos, setDotos] = useState([]);
+    const [todos, setTodos] = useState([]);
+    const [message, setMessage] = useState(false);
 
     useEffect(() => {
         getToDo().then(data => {
-            setDotos(data)
+            setTodos(data)
         })
     }, [])
 
@@ -23,19 +26,23 @@ export const ToDo = () => {
     }
 
     async function handleSubmit() {
-        setIsUpdate(false)
-        setDotos(await createToDo(ref.current.value))
-        ref.current.value = "";
+        if (ref.current.value) {
+            setIsUpdate(false)
+            setTodos(await createToDo(ref.current.value))
+            ref.current.value = "";
+        } else setMessage(true)
     }
 
     async function handleDelete(id) {
-        setDotos(await deleteToDo(id))
+        setTodos(await deleteToDo(id))
     }
 
     async function handleUpdate() {
-        setDotos(await updateToDo({ ...update, title: ref.current.value }))
+        setTodos(await updateToDo({ ...update, title: ref.current.value }))
         setIsUpdate(false)
         ref.current.value = ""
+        ref.current.blur();
+
     }
 
     async function handleEdit(todoTitle, id) {
@@ -45,29 +52,49 @@ export const ToDo = () => {
         setUpdate({ id })
     }
 
+    function handleCancelEdit() {
+        ref.current.value = "";
+        ref.current.blur();
+        setIsUpdate(false)
+    }
+
+
+    function handleMessage(isMessage) {
+        setMessage(isMessage);
+    }
+
     return (
         <>
             <ToDoPage>
-                <ToDoAction>
-                    <Title>Title: </Title>
-                    <ToDoInput ref={ref} type={'text'} placeholder=" add your to do" onKeyUp={(e) => submitOnEnter(e)} />
-                    <Button onClick={() => isUpdate ? handleUpdate() : handleSubmit()}>
-                        {isUpdate ? "edit" : "add"}
-                    </Button>
-                </ToDoAction>
+                {!message ?
+                    <>
+                        <ToDoAction>
+                            <Description>
+                                <Title>Title: </Title>
+                                <ToDoInput ref={ref} type={'text'} placeholder=" add your to do" onKeyUp={(e) => submitOnEnter(e)} />
+                            </Description>
+                            <FormButtons>
+                                <Button onClick={() => isUpdate ? handleUpdate() : handleSubmit()}>
+                                    {isUpdate ? "edit" : "add"}
+                                </Button>
+                                {isUpdate ? <CancelButton onClick={() => handleCancelEdit()}>cancel</CancelButton> : ""}
+                            </FormButtons>
+                        </ToDoAction>
 
-                <ToDoList>
-                    {todos?.map((toDo, i) => {
-                        return (
-                            <ToDoItemsStyle key={toDo._id}>
-                                <ToDoItems>{`${i + 1}`.padStart(2, '0')}- {toDo.title}</ToDoItems>
-                                <FontAwesomeIconStyle>
-                                    <FontAwesomeIcon icon={faTrash} color="red" onClick={() => handleDelete(toDo._id)} />
-                                    <FontAwesomeIcon icon={faPenToSquare} color="blue" onClick={(e) => handleEdit(toDo.title, toDo._id)} />
-                                </FontAwesomeIconStyle>
-                            </ToDoItemsStyle>)
-                    })}
-                </ToDoList>
+                        <ToDoList>
+                            {todos?.map((toDo, i) => {
+                                return (
+                                    <ToDoItemsStyle key={toDo._id}>
+                                        <ToDoItems>{`${i + 1}`.padStart(2, '0')}- {toDo.title}</ToDoItems>
+                                        <FontAwesomeIconStyle>
+                                            <FontAwesomeIcon icon={faPenToSquare} color="blue" onClick={(e) => handleEdit(toDo.title, toDo._id)} />
+                                            <FontAwesomeIcon icon={faTrash} color="red" onClick={() => handleDelete(toDo._id)} />
+                                        </FontAwesomeIconStyle>
+                                    </ToDoItemsStyle>)
+                            })}
+                        </ToDoList>
+                    </> : <Message handleMessage={handleMessage} />}
+
             </ToDoPage>
         </>
     );
