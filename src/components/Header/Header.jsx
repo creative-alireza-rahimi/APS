@@ -1,12 +1,12 @@
 import { themes } from "../../Tools/colors";
+import { ProfileNav } from "../ProfileNav/ProfileNav";
+import { Logo } from "./Logo/Logo";
 import {
     CssBaseline,
     Box,
     Container,
     Stack,
 } from '@mui/material';
-import { ProfileNav } from "../ProfileNav/ProfileNav";
-import { Logo } from "../Logo/Logo";
 
 export const Header = () => {
     return (
