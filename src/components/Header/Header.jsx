@@ -1,5 +1,5 @@
 import { themes } from "../../Tools/colors";
-import { ProfileNav } from "../ProfileNav/ProfileNav";
+import { ProfileNav } from "./ProfileNav/ProfileNav";
 import { Logo } from "./Logo/Logo";
 import {
     CssBaseline,
@@ -24,7 +24,7 @@ export const Header = () => {
                     }}
                 >
 
-                    <Stack spacing={12} direction="row" justifyContent="space-between">
+                    <Stack direction="row" justifyContent="space-between">
                         <Logo />
                         <ProfileNav />
                     </Stack>
