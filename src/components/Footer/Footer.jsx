@@ -11,7 +11,7 @@ export const Footer = () => {
     return (
         <>
             <CssBaseline />
-            <Container sx={{position: "fixed", bottom: '0'}}>
+            <Container sx={{position: "fixed", bottom: '0', left: 0, right: 0}}>
                 <Box
                     sx={{
                         width: "100%",
@@ -23,7 +23,7 @@ export const Footer = () => {
                     }}
                 >
 
-                    <Stack spacing={12} direction="row" justifyContent="space-between">
+                    <Stack direction="row" justifyContent="space-between">
                         <ContactMe />
                     </Stack>
 
