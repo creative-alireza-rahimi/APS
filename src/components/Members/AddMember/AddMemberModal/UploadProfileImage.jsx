@@ -30,7 +30,7 @@ export const UploadProfileImage = ({ handleUploadClick, handleProfileImage, Imag
             >
                 <Stack direction="row" alignItems="center" spacing={2}>
                     <PhotoCamera sx={{ marginRight: "0.4rem", color: "gray" }} />
-                    Upload Image
+                    {ImagePreview ? "Change Photo" : "Upload Photo"}
                     {ImagePreview && <Avatar alt="Remy Sharp" src={ImagePreview} />}
                 </Stack>
                 <input
