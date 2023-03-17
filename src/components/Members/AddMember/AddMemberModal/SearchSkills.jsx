@@ -27,6 +27,7 @@ export const SearchSkills = () => {
                         variant="standard"
                         label="Skills"
                         placeholder={value.length > 0 ? "" : "ReactJs, ..."}
+                        InputLabelProps={{className: value.length ? 'textField_label_primary' : "textField_label_danger"}}
                     />
                 )}
             />

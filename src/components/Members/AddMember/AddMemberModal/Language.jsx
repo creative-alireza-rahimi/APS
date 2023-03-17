@@ -43,6 +43,7 @@ export const Language = () => {
                         variant="standard"
                         label="Language"
                         placeholder={value.length > 0 ? "" : "Farsi, English, ..."}
+                        InputLabelProps={{className: value.length ? 'textField_label_primary' : "textField_label_danger"}}
                     />
                 )}
             />
