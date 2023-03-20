@@ -8,7 +8,13 @@ import {
     Divider
 } from '@mui/material';
 
-export const DeleteDialog = ({ modalStatus, handleDeleteDialog }) => {
+export const DeleteDialog = ({
+    modalStatus,
+    DeleteDialogTitle,
+    DialogDescription,
+    DeleteBtnTitle,
+    CancelBtnTitle,
+    handleDeleteDialog }) => {
 
     function handleDelete() {
         console.log("delete");
@@ -23,20 +29,20 @@ export const DeleteDialog = ({ modalStatus, handleDeleteDialog }) => {
             aria-describedby="alert-dialog-description"
         >
             <DialogTitle id="alert-dialog-title">
-                Delete {'Title'}?
+                {DeleteDialogTitle}
             </DialogTitle>
 
             <Divider variant="middle" />
 
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    Delete it and you are gonna need it immediately! 🙂
+                    {DialogDescription}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleDeleteDialog}>Mission Abort</Button>
+                <Button onClick={handleDeleteDialog}>{CancelBtnTitle}</Button>
                 <Button onClick={handleDelete} autoFocus>
-                    Delete
+                    {DeleteBtnTitle}
                 </Button>
             </DialogActions>
         </Dialog>
