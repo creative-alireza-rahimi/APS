@@ -66,7 +66,7 @@ export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
               autoFocus
               id="fullName"
               label="Full Name"
-              type="tezt"
+              type="text"
               fullWidth
               variant="standard"
               error={fullName ? false : true}
