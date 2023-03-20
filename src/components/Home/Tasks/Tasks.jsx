@@ -15,7 +15,7 @@ import {
     useMediaQuery,
 } from '@mui/material';
 
-export const Tasks = () => {
+export const Tasks = ({ complete, edit }) => {
     const isHorizonal = useMediaQuery('(max-width : 650px)');
     const profile500 = useMediaQuery('(max-width : 500px)');
     const profile450 = useMediaQuery('(max-width : 450px)');
@@ -90,30 +90,38 @@ export const Tasks = () => {
                         aria-label="vertical outlined button group"
                         sx={{ margin: `${isHorizonal ? "0.6rem auto 0" : "0"}` }}
                     >
-                        <Button
+                        {edit && <Button
                             key="edit"
                             sx={{ "&:hover": { background: "#0288d1", color: "#fff", border: "1px solid #0288d1" } }}
                             onClick={handleEditDialog}>
                             Edit
-                        </Button>
+                        </Button>}
                         <Button
                             key="delete"
                             sx={{ "&:hover": { background: "#d32f2f", color: "#fff", border: "1px solid #d32f2f" } }}
                             onClick={handleDeleteDialog}>
                             Delete
                         </Button>
-                        <Button
-                            key="complete"
-                            sx={{ "&:hover": { background: "#388e3c", color: "#fff", border: "1px solid #388e3c" } }}
-                            onClick={handleComplete}>
-                            Complete
-                        </Button>
+                        {!complete &&
+                            <Button
+                                key="complete"
+                                sx={{ "&:hover": { background: "#388e3c", color: "#fff", border: "1px solid #388e3c" } }}
+                                onClick={handleComplete}>
+                                Complete
+                            </Button>}
+                        {complete &&
+                            <Button
+                                key="revert"
+                                sx={{ "&:hover": { background: "#ff9100", color: "#fff", border: "1px solid #ff9100" } }}
+                                onClick={handleComplete}>
+                                Revert
+                            </Button>}
                     </ButtonGroup>
                 </Stack>
             </Container>
 
-            <DeleteDialog modalStatus={openDelete} handleDeleteDialog={handleDeleteDialog}/>
-            <EditDialog modalStatus={openEdit} handleEditDialog={handleEditDialog}/>
+            <DeleteDialog modalStatus={openDelete} handleDeleteDialog={handleDeleteDialog} />
+            <EditDialog modalStatus={openEdit} handleEditDialog={handleEditDialog} />
 
         </Stack>
     );
