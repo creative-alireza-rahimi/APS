@@ -1,5 +1,6 @@
-
+import { useState } from 'react';
 import { Tasks } from "./Tasks/Tasks";
+import { DeleteTasks } from "./Tasks/DeleteTasks";
 import {
     CssBaseline,
     Container,
@@ -10,6 +11,8 @@ import {
 } from '@mui/material';
 
 export const Home = () => {
+    const [hasComplete, setHasComplete] = useState(true)
+
     return (
         <>
             <CssBaseline />
@@ -23,13 +26,21 @@ export const Home = () => {
                         <Chip label="ALL TASKS" />
                     </Divider>
 
+                    <DeleteTasks title="Tasks" />
+
                     <Tasks edit />
 
-                    <Divider variant="middle" role="tasks" sx={{ width: "100%" }}>
-                        <Chip label="COMPLETED TASKS" />
-                    </Divider>
+                    {hasComplete &&
+                        <>
+                            <Divider variant="middle" role="tasks" sx={{ width: "100%" }}>
+                                <Chip label="COMPLETED TASKS" />
+                            </Divider>
 
-                    <Tasks complete />
+                            <DeleteTasks title="Completed Tasks" />
+
+                            <Tasks complete />
+                        </>
+                    }
                 </Stack>
             </Container>
         </>
