@@ -26,7 +26,7 @@ export const DeleteTasks = ({ title }) => {
       <DeleteDialog 
         modalStatus={openDelete} 
         handleDeleteDialog={handleDeleteDialog} 
-        DeleteDialogTitle="Delete All Tasks?"
+        DeleteDialogTitle={`Delete ${title}`}
         DialogDescription="Are You Sure? Sure Sure?"
         DeleteBtnTitle="Delete All"
         CancelBtnTitle="Mission Abort" />
