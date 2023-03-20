@@ -88,7 +88,7 @@ export const Tasks = ({ complete, edit }) => {
                     <ButtonGroup
                         orientation={isHorizonal ? "horizontal" : "vertical"}
                         aria-label="vertical outlined button group"
-                        sx={{ margin: `${isHorizonal ? "0.6rem auto 0" : "0"}` }}
+                        sx={{ margin: `${isHorizonal ? "0.6rem auto 0" : "0"}`, minWidth: 120 }}
                     >
                         {edit && <Button
                             key="edit"
