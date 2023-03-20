@@ -3,13 +3,15 @@ import {
     TextField,
     Autocomplete,
     FormControl,
+    Avatar,
+    Stack
 } from '@mui/material';
 
-export const EditMembers = () => {
+export const EditMembers = ({ Image }) => {
     const [value, setValue] = useState([]);
 
     return (
-        <FormControl error variant="standard" sx={{ maxWidth: 400, minWidth: "100%", marginTop: "1rem" }}>
+        <FormControl error variant="standard" sx={{ maxWidth: 350, minWidth: "100%", marginTop: "1rem" }}>
             <Autocomplete
                 value={value}
                 onChange={(event, newValue) => {
@@ -19,6 +21,12 @@ export const EditMembers = () => {
                 id="members"
                 options={members}
                 getOptionLabel={(option) => option.fullName}
+                renderOption={(option) => (
+                    <Stack {...option} direction="row" alignItems="center">
+                        <Avatar alt="Remy Sharp" src="./photo.jpg" sx={{ width: "2rem", height: "2rem", marginRight: "1rem" }} />
+                        {option.key}
+                    </Stack>
+                )}
                 renderInput={(params) => (
                     <TextField
                         {...params}
@@ -32,7 +40,7 @@ export const EditMembers = () => {
 }
 
 const members = [
-{
-    fullName: "Alireza Rahimi"
-}
+    {
+        fullName: "Alireza Rahimi"
+    },
 ];
