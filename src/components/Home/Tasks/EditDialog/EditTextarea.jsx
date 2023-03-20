@@ -1,14 +1,18 @@
-import {useState} from 'react';
-import {Box, IconButton, Textarea, FormLabel} from '@mui/joy';
-import {FormatBold, FormatItalic} from '@mui/icons-material';
-import {Stack} from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, IconButton, Textarea, FormLabel } from '@mui/joy';
+import { FormatBold, FormatItalic } from '@mui/icons-material';
+import { Stack } from '@mui/material';
 
-export const EditTextarea = () => {
+export const EditTextarea = ({ setDescription }) => {
   const [text, setText] = useState('');
   const [italic, setItalic] = useState(false);
   const [isBold, setIsBold] = useState(false);
 
   const addEmoji = (emoji) => () => setText(`${text}${emoji}`);
+
+  useEffect(() => {
+    setDescription(text)
+  },)
 
   return (
     <Stack sx={{ marginTop: '1rem', }}>
