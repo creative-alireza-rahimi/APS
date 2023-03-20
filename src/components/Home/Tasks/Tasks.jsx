@@ -120,7 +120,13 @@ export const Tasks = ({ complete, edit }) => {
                 </Stack>
             </Container>
 
-            <DeleteDialog modalStatus={openDelete} handleDeleteDialog={handleDeleteDialog} />
+            <DeleteDialog
+                modalStatus={openDelete}
+                handleDeleteDialog={handleDeleteDialog}
+                DeleteDialogTitle={`Delete ${"Title"}`}
+                DialogDescription="Delete it and you are gonna need it immediately! 🙂"
+                DeleteBtnTitle="Delete"
+                CancelBtnTitle="Mission Abort" />
             <EditDialog modalStatus={openEdit} handleEditDialog={handleEditDialog} />
 
         </Stack>
