@@ -16,20 +16,20 @@ export const Home = () => {
             <Container>
                 <Stack justifyContent="space-between" alignItems="center" spacing={3}>
                     <Stack direction="row" flexWrap="wrap">
-                        <Avatar alt="image" src="src" />
+                        <Avatar alt="Alireza" src="src" />
                     </Stack>
 
                     <Divider variant="middle" role="tasks" sx={{ width: "100%" }}>
                         <Chip label="ALL TASKS" />
                     </Divider>
 
-                    <Tasks />
+                    <Tasks edit />
 
                     <Divider variant="middle" role="tasks" sx={{ width: "100%" }}>
                         <Chip label="COMPLETED TASKS" />
                     </Divider>
 
-                    <Tasks />
+                    <Tasks complete />
                 </Stack>
             </Container>
         </>
