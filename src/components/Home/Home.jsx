@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Tasks } from "./Tasks/Tasks";
 import { DeleteTasks } from "./Tasks/DeleteTasks";
+import { TotalTasks } from "./Tasks/TotalTasks";
 import {
     CssBaseline,
     Container,
@@ -26,7 +27,10 @@ export const Home = () => {
                         <Chip label="ALL TASKS" />
                     </Divider>
 
-                    <DeleteTasks title="Tasks" />
+                    <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
+                        <DeleteTasks title="Tasks" />
+                        <TotalTasks />
+                    </Stack>
 
                     <Tasks edit />
 
