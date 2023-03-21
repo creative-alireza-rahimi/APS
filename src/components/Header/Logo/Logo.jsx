@@ -1,4 +1,5 @@
 import { Button } from '@mui/material';
+import { NavLink } from "react-router-dom";
 
 export const Logo = () => {
     return (
@@ -15,7 +16,7 @@ export const Logo = () => {
                 },
             }}
         >
-            CA TodZilla
+            <NavLink to={"/"} style={{color: "white", textDecoration: 'none'}}>CA TodZilla</NavLink>
         </Button>
     );
 }
