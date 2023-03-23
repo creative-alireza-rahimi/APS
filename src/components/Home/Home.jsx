@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Tasks } from "./Tasks/Tasks";
 import { DeleteTasks } from "./Tasks/DeleteTasks";
+import { AddTasks } from "./Tasks/AddTasks/AddTasks";
 import { TotalTasks } from "./Tasks/TotalTasks";
 import {
     CssBaseline,
@@ -13,6 +14,11 @@ import {
 
 export const Home = () => {
     const [hasComplete, setHasComplete] = useState(true)
+    const [openAdd, setOpenAdd] = useState(false);
+
+    function handleAddDialog() {
+        setOpenAdd(openAdd => !openAdd)
+    }
 
     return (
         <>
@@ -28,7 +34,10 @@ export const Home = () => {
                     </Divider>
 
                     <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
-                        <DeleteTasks title="Tasks" />
+                        <Stack direction="row">
+                            <AddTasks openAdd={openAdd} handleAddDialog={handleAddDialog} />
+                            <DeleteTasks title="Tasks" />
+                        </Stack>
                         <TotalTasks />
                     </Stack>
 
