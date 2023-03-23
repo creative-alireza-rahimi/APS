@@ -4,18 +4,19 @@ import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 
 export const SearchBox = () => {
-    const smMargin = useMediaQuery('(max-width : 460px)');
+    const smMargin = useMediaQuery('(max-width : 475px)');
     const smWidth = useMediaQuery('(max-width : 730px)');
 
     return (
         <Paper
             component="form"
-            sx={{ p: '1px 4px',
-            display: 'flex',
-            alignItems: 'center',
-            width: smWidth ? 250 : 500,
-            marginTop: smMargin ? "1rem" : ""
-        }}
+            sx={{
+                p: '1px 4px',
+                display: 'flex',
+                alignItems: 'center',
+                width: smWidth ? 250 : 500,
+                marginTop: smMargin ? "1rem" : ""
+            }}
         >
             <InputBase
                 sx={{ ml: 2, flex: 1 }}
