@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Stack } from '@mui/material';
 import FunctionsIcon from '@mui/icons-material/Functions';
+import { themes } from "../../../Tools/colors";
 
 export const TotalTasks = () => {
     return (
@@ -8,10 +9,14 @@ export const TotalTasks = () => {
             <Button
                 disableRipple
                 variant="contained"
-                color="primary"
+                disabled
                 startIcon={<FunctionsIcon />}
                 sx={{
                     textTransform: "none",
+                    "&:disabled": {
+                        backgroundColor: `${themes.palette.secondary.main}`,
+                        color: "white"
+                    }
                 }}
             >
                 Total Tasks:
