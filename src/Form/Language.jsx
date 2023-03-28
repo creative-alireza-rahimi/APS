@@ -40,11 +40,11 @@ export const Language = ({selectedLanguages, customStyle}) => {
                         variant="standard"
                         label="Language"
                         placeholder={selectedLanguages?.value?.length > 0 ? "" : "Farsi, English, ..."}
-                        InputLabelProps={{ className: selectedLanguages?.value?.length ? 'textField_label_primary' : "textField_label_danger" }}
+                        InputLabelProps={{ className: !!selectedLanguages?.value?.length ? 'textField_label_primary' : "textField_label_danger" }}
                     />
                 )}
             />
-            <FormHelperText id="languages-error">
+            <FormHelperText id="languages-error" sx={{color: !!selectedLanguages?.value?.length ? "" : "rgb(211, 47, 47)"}}>
                 {selectedLanguages?.value?.length > 1 ? "Choose Only one language" : selectedLanguages?.value?.length === 0 ? "Choose your language" : ""}
             </FormHelperText>
         </FormControl>
