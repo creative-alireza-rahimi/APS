@@ -1,5 +1,5 @@
-import { SearchSkills } from "./SearchSkills";
-import { Language } from "./Language";
+import { SearchSkills } from "../../../../Form/Skills/SearchSkills";
+import { Language } from "../../../../Form/Language";
 import { useState } from "react";
 import {
   Button,
@@ -11,7 +11,7 @@ import {
   DialogTitle,
   Stack,
 } from '@mui/material';
-import { UploadProfileImage } from "./UploadProfileImage";
+import { UploadProfileImage } from "../../../../Form/UploadProfileImage";
 
 export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
   const [selectedFile, setSelectedFile] = useState(null);
