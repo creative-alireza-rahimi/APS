@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, useMediaQuery } from '@mui/material';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import { themes } from "../../../Tools/colors";
 
 export const TotalTasks = () => {
+    const textVisibility = useMediaQuery('(max-width : 500px)');
+
     return (
         <Stack alignSelf="flex-start">
             <Button
@@ -13,13 +14,15 @@ export const TotalTasks = () => {
                 startIcon={<FunctionsIcon />}
                 sx={{
                     textTransform: "none",
+                    height: textVisibility && '38px',
+
                     "&:disabled": {
                         backgroundColor: `${themes.palette.secondary.main}`,
                         color: "white"
                     }
                 }}
             >
-                Total Tasks:
+                {!textVisibility && "Total Tasks:"}
             </Button>
         </Stack>
     );
