@@ -1,4 +1,14 @@
 import { useState } from "react";
+import { emailValidation } from "../../Tools/emailValidation";
+import { UploadProfileImage } from "../../Form/UploadProfileImage";
+import { Password } from "../../Form/Password";
+import { Email } from "../../Form/Email";
+import { SearchSkills } from "../../Form/Skills/SearchSkills";
+import { Language } from "../../Form/Language";
+import { NotificationSnackbar } from "../../Form/NotificationSnackbar";
+import { newAdmin } from "../../API/API";
+import { splitFullName } from "../../Tools/splitFullName";
+import { Link } from 'react-router-dom';
 import {
     Button,
     TextField,
@@ -9,26 +19,40 @@ import {
     DialogTitle,
     Stack,
 } from '@mui/material';
-import { UploadProfileImage } from "./UploadProfileImage";
 
-export const SignUp = ({ openForm, OpenSignUp }) => {
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [ImagePreview, setImagePreview] = useState(null);
-    const [fullName, setFullName] = useState("");
-    const [age, setAge] = useState(0);
-    const [github, setGithub] = useState("")
+export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const [password, setPassword] = useState("");
     const [linkedIn, setLinkedIn] = useState("")
+    const [fullName, setFullName] = useState("");
+    const [github, setGithub] = useState("")
+    const [email, setEmail] = useState("");
+    const [age, setAge] = useState(0);
+    const [skills, setSkills] = useState([])
+    const [language, setLanguage] = useState([])
+    const [profilePhoto, setProfilePhoto] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [isAdminCreated, setIsAdminCreated] = useState(false);
 
-    const handleUploadClick = () => {
-        const formData = new FormData();
-        for (let i = 0; i < selectedFile?.length; i++) {
-            formData.append('profilePicture', selectedFile[i]);
-        }
-    };
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-    function handleProfileImage(event) {
-        setSelectedFile(event.target.files);
-        setImagePreview(URL.createObjectURL(event.target.files[0]));
+    const handleNewAdmin = async () => {
+        setIsAdminCreated(
+            newAdmin({
+                fullName: splitFullName(fullName).fullName,
+                firstName: splitFullName(fullName).firstName,
+                lastName: splitFullName(fullName).lastName,
+                password,
+                age,
+                email,
+                github,
+                linkedIn,
+                skills,
+                language,
+                profilePhoto,
+                members: [],
+                isAdmin: true
+            }))
     }
 
     function handleForm(e) {
@@ -45,6 +69,12 @@ export const SignUp = ({ openForm, OpenSignUp }) => {
             case "linkedIn":
                 setLinkedIn(e.target.value)
                 break;
+            case "email":
+                setEmail(emailValidation(e.target.value))
+                break;
+            case "password":
+                setPassword(e.target.value)
+                break;
             default:
                 break;
         }
@@ -53,14 +83,16 @@ export const SignUp = ({ openForm, OpenSignUp }) => {
     return (
         <Dialog
             open={openForm}
-            onClose={(event, reason) => reason === 'backdropClick' ? "" : OpenSignUp()}>
-            <DialogTitle>Sign Up as Admin</DialogTitle>
+            onClose={(_, reason) =>
+                reason === 'backdropClick' || reason === 'escapeKeyDown' ?
+                    "" : OpenSignUp()}>
+            <DialogTitle>Sign Up</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Enter Your Info
                 </DialogContentText>
 
-                <Stack direction="row" spacing={1} alignItems="center" marginTop="1rem">
+                <Stack direction="row" spacing={1} alignItems="center" margin="1rem 0">
                     <TextField
                         autoFocus
                         id="fullName"
@@ -84,7 +116,18 @@ export const SignUp = ({ openForm, OpenSignUp }) => {
                     />
                 </Stack>
 
-                <Stack direction="row" alignItems="center">
+                <Stack direction="row" alignItems="center" margin="1rem 0">
+                    <Email form={handleForm} email={email} />
+
+                    <Password
+                        showPassword={showPassword}
+                        password={password}
+                        form={handleForm}
+                        handleClick={handleClickShowPassword} />
+
+                </Stack>
+
+                <Stack direction="row" alignItems="center" margin="1rem 0">
                     <TextField
                         margin="dense"
                         id="github"
@@ -108,15 +151,37 @@ export const SignUp = ({ openForm, OpenSignUp }) => {
                     />
                 </Stack>
 
+                <Stack margin="1rem 0">
+                    <SearchSkills skillsArray={{ value: skills, setValue: setSkills }} />
+                    <Language selectedLanguages={{ value: language, setValue: setLanguage }} customStyle={{ margin: "1rem 0" }} />
+                </Stack>
+
                 <UploadProfileImage
-                    handleUploadClick={handleUploadClick}
-                    handleProfileImage={handleProfileImage}
-                    ImagePreview={ImagePreview} />
+                    profilePhoto={{ value: profilePhoto, setValue: setProfilePhoto }}
+                    imagePreview={{ value: imagePreview, setValue: setImagePreview }} />
             </DialogContent>
             <DialogActions>
-                <Button onClick={OpenSignUp}>Go Back</Button>
-                <Button onClick={OpenSignUp}>Sign Up</Button>
+                <Button
+                    to="/"
+                    component={Link}
+                    onClick={() => {
+                        OpenSignUp();
+                        AuthDialog();
+                    }}>
+                    Back
+                </Button>
+                <Button
+                    onClick={() => {
+                        OpenSignUp();
+                        handleNewAdmin();
+                    }}>
+                    Sign Up
+                </Button>
             </DialogActions>
+            {isAdminCreated &&
+                <NotificationSnackbar
+                    closeSnack={{ value: isAdminCreated, setValue: setIsAdminCreated }}
+                    message={"Admin Created Successfully!"} />}
         </Dialog>
     );
 }
