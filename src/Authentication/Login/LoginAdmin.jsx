@@ -3,21 +3,47 @@ import { Email } from "../../Form/Email";
 import { Password } from "../../Form/Password";
 import { emailValidation } from "../../Tools/emailValidation";
 import { Link } from 'react-router-dom';
+import { getAdmin } from "../../API/API";
+import { useDispatch } from 'react-redux';
+import { isAuth } from '../authSlice';
+import { getMember } from '../../components/Members/membersSlice';
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    Stack
+    Stack,
+    LinearProgress
 } from '@mui/material';
 
 export const LoginAdmin = ({ openForm, OpenLogin, AuthDialog }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const dispatch = useDispatch()
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleLoginAdmin = async () => {
+        setIsLoading(true)
+
+        const admin = await getAdmin({
+            password,
+            email,
+        })
+    
+        console.log("admin: ", admin);
+
+        if (admin.status === 200) {
+            dispatch(isAuth())
+            setIsLoading(false)
+
+            dispatch(getMember(admin.data))
+        }
+    }
 
     function handleForm(e) {
         switch (e.target.id) {
@@ -41,6 +67,7 @@ export const LoginAdmin = ({ openForm, OpenLogin, AuthDialog }) => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
+            {isLoading && <LinearProgress />}
             <DialogTitle id="alert-dialog-title">
                 Login (Admin)
             </DialogTitle>
@@ -65,7 +92,9 @@ export const LoginAdmin = ({ openForm, OpenLogin, AuthDialog }) => {
                     }}>
                     Back
                 </Button>
-                <Button onClick={OpenLogin}>
+                <Button onClick={() => {
+                    handleLoginAdmin();
+                    }}>
                     Login
                 </Button>
             </DialogActions>
