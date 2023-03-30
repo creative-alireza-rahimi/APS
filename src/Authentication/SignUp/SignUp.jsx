@@ -9,6 +9,9 @@ import { NotificationSnackbar } from "../../Form/NotificationSnackbar";
 import { newAdmin } from "../../API/API";
 import { splitFullName } from "../../Tools/splitFullName";
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { isAuth } from '../authSlice';
+import { getMember } from '../../components/Members/membersSlice';
 import {
     Button,
     TextField,
@@ -18,9 +21,15 @@ import {
     DialogContentText,
     DialogTitle,
     Stack,
+    Box,
+    LinearProgress
 } from '@mui/material';
 
 export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
+
+    const dispatch = useDispatch()
+
+    const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState("");
     const [linkedIn, setLinkedIn] = useState("")
@@ -37,22 +46,31 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleNewAdmin = async () => {
-        setIsAdminCreated(
-            newAdmin({
-                fullName: splitFullName(fullName).fullName,
-                firstName: splitFullName(fullName).firstName,
-                lastName: splitFullName(fullName).lastName,
-                password,
-                age,
-                email,
-                github,
-                linkedIn,
-                skills,
-                language,
-                profilePhoto,
-                members: [],
-                isAdmin: true
-            }))
+        setIsLoading(true)
+
+        const admin = await newAdmin({
+            fullName: splitFullName(fullName).fullName,
+            firstName: splitFullName(fullName).firstName,
+            lastName: splitFullName(fullName).lastName,
+            password,
+            age,
+            email,
+            github,
+            linkedIn,
+            skills,
+            language,
+            profilePhoto,
+            members: [],
+            isAdmin: true
+        })
+        console.log("admin: ", admin);
+
+        if (admin.status === 200) {
+            dispatch(isAuth())
+            setIsLoading(false)
+
+            dispatch(getMember(admin.data))
+        }
     }
 
     function handleForm(e) {
@@ -86,13 +104,20 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
             onClose={(_, reason) =>
                 reason === 'backdropClick' || reason === 'escapeKeyDown' ?
                     "" : OpenSignUp()}>
+            {isLoading && <LinearProgress />}
             <DialogTitle>Sign Up</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Enter Your Info
                 </DialogContentText>
 
-                <Stack direction="row" spacing={1} alignItems="center" margin="1rem 0">
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: "49% 49%",
+                        gap: "2%",
+                        margin: "1rem 0"
+                    }}>
                     <TextField
                         autoFocus
                         id="fullName"
@@ -114,9 +139,15 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
                         helperText={age >= 16 && age <= 50 ? "" : "(16 <= Age <= 50)"}
                         onChange={handleForm}
                     />
-                </Stack>
+                </Box>
 
-                <Stack direction="row" alignItems="center" margin="1rem 0">
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: "49% 49%",
+                        gap: "2%",
+                        margin: "1rem 0"
+                    }}>
                     <Email form={handleForm} email={email} />
 
                     <Password
@@ -125,9 +156,15 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
                         form={handleForm}
                         handleClick={handleClickShowPassword} />
 
-                </Stack>
+                </Box>
 
-                <Stack direction="row" alignItems="center" margin="1rem 0">
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: "49% 49%",
+                        gap: "2%",
+                        marginTop: "1rem"
+                    }}>
                     <TextField
                         margin="dense"
                         id="github"
@@ -149,7 +186,7 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
                         helperText={linkedIn ? "" : "LinkedIn username"}
                         onChange={handleForm}
                     />
-                </Stack>
+                </Box>
 
                 <Stack margin="1rem 0">
                     <SearchSkills skillsArray={{ value: skills, setValue: setSkills }} />
@@ -172,7 +209,6 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
                 </Button>
                 <Button
                     onClick={() => {
-                        OpenSignUp();
                         handleNewAdmin();
                     }}>
                     Sign Up
@@ -180,7 +216,7 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
             </DialogActions>
             {isAdminCreated &&
                 <NotificationSnackbar
-                    closeSnack={{ value: isAdminCreated, setValue: setIsAdminCreated }}
+                    closeSnack={{ value: !!isAdminCreated, setValue: setIsAdminCreated }}
                     message={"Admin Created Successfully!"} />}
         </Dialog>
     );
