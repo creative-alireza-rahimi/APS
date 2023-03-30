@@ -5,19 +5,21 @@ import {
     FormHelperText,
     FormControl
 } from '@mui/material';
-import { useGetCountriesQuery } from "../API/apiSlice"
+import { getAllLanguages } from "../API/API"
 
-export const Language = ({selectedLanguages, customStyle}) => {
+export const Language = ({ selectedLanguages, customStyle }) => {
     const [languages, setLanguages] = useState([]);
 
-    const { data: countries } = useGetCountriesQuery();
 
     useEffect(() => {
-        setLanguages(
-            [...new Set(countries?.map(lang => lang.languages && Object.values(lang.languages)[0]))]
-                .filter(lan => lan !== undefined)
-        )
-    }, [countries])
+        getAllLanguages().then(countries =>
+            setLanguages(
+                [...new Set(countries?.map(lang => lang.languages && Object.values(lang.languages)[0]))]
+                    .filter(lan => lan !== undefined)
+                    .filter(lan => lan.length <= 15)
+            )
+        );
+    }, [])
 
     return (
         <FormControl error={!!selectedLanguages?.value?.length} variant="standard" sx={[{ maxWidth: 300, minWidth: "100%" }, customStyle]}>
