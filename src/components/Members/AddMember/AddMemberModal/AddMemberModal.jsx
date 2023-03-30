@@ -1,6 +1,11 @@
+import { useState } from "react";
+import { newMembers } from "../../../../API/API";
 import { SearchSkills } from "../../../../Form/Skills/SearchSkills";
 import { Language } from "../../../../Form/Language";
-import { useState } from "react";
+import { splitFullName } from "../../../../Tools/splitFullName";
+import { UploadProfileImage } from "../../../../Form/UploadProfileImage";
+import { newMember } from "../../membersSlice";
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   TextField,
@@ -9,28 +14,50 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  LinearProgress,
   Stack,
+  Box
 } from '@mui/material';
-import { UploadProfileImage } from "../../../../Form/UploadProfileImage";
 
 export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [ImagePreview, setImagePreview] = useState(null);
+  const admin = useSelector((state) => state.members)
+  const {id: adminId} = admin[0]
+
+  const [imagePreview, setImagePreview] = useState(null);
+  const [profilePhoto, setProfilePhoto] = useState(null);
   const [fullName, setFullName] = useState("");
   const [age, setAge] = useState(0);
   const [github, setGithub] = useState("")
   const [linkedIn, setLinkedIn] = useState("")
+  const [skills, setSkills] = useState([])
+  const [language, setLanguage] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleUploadClick = () => {
-    const formData = new FormData();
-    for (let i = 0; i < selectedFile?.length; i++) {
-      formData.append('profilePicture', selectedFile[i]);
+  const dispatch = useDispatch();
+
+  const handleNewMember = async () => {
+    setIsLoading(true);
+
+    const member = await newMembers({
+      fullName: splitFullName(fullName).fullName,
+      firstName: splitFullName(fullName).firstName,
+      lastName: splitFullName(fullName).lastName,
+      age,
+      github,
+      linkedIn,
+      skills,
+      language,
+      profilePhoto,
+      adminId,
+      isAdmin: false
+    })
+
+    if (member.status === 200) {
+      dispatch(newMember(member.data))
+
+      setIsLoading(false)
+      handleDialog();
     }
-  };
-
-  function handleProfileImage(event) {
-    setSelectedFile(event.target.files);
-    setImagePreview(URL.createObjectURL(event.target.files[0]));
   }
 
   function handleForm(e) {
@@ -55,13 +82,20 @@ export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
   return (
     <div>
       <Dialog open={dialogStatus} onClose={handleDialog}>
+        {isLoading && <LinearProgress />}
         <DialogTitle>Add Member</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Fill The Inputs With Great Care.
           </DialogContentText>
 
-          <Stack direction="row" spacing={1} alignItems="center" marginTop="1rem">
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: "49% 49%",
+              gap: "2%",
+              margin: "1rem 0"
+            }}>
             <TextField
               autoFocus
               id="fullName"
@@ -83,9 +117,15 @@ export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
               helperText={age >= 16 && age <= 50 ? "" : "(16 <= Age <= 50)"}
               onChange={handleForm}
             />
-          </Stack>
+          </Box>
 
-          <Stack direction="row" alignItems="center">
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: "49% 49%",
+              gap: "2%",
+              margin: "1rem 0"
+            }}>
             <TextField
               margin="dense"
               id="github"
@@ -107,20 +147,24 @@ export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
               helperText={linkedIn ? "" : "LinkedIn username"}
               onChange={handleForm}
             />
+          </Box>
+
+          <Stack margin="1rem 0">
+            <SearchSkills skillsArray={{ value: skills, setValue: setSkills }} />
+            <Language selectedLanguages={{ value: language, setValue: setLanguage }} customStyle={{ margin: "1rem 0" }} />
           </Stack>
 
-          <SearchSkills />
-
-          <Language />
-
           <UploadProfileImage
-            handleUploadClick={handleUploadClick}
-            handleProfileImage={handleProfileImage}
-            ImagePreview={ImagePreview} />
+            profilePhoto={{ value: profilePhoto, setValue: setProfilePhoto }}
+            imagePreview={{ value: imagePreview, setValue: setImagePreview }} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialog}>Cancel</Button>
-          <Button onClick={handleDialog}>Add Member</Button>
+          <Button onClick={() => {
+              handleNewMember();
+          }}>
+            Add Member
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
