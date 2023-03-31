@@ -1,5 +1,5 @@
 const Admin = require("../model/Admins");
-
+const { hashPassword } = require("../helpers/hashPasswordBcrypt");
 // const Item = require("../model/Admins");
 
 // @desc - all admin
@@ -20,13 +20,29 @@ const getAllAdmins = async (req, res) => {
 // @access - public
 const getAdmin = async (req, res) => {
   const { email, password } = req?.body;
-  console.log(email, password);
 
   try {
-    const admin = await Admin.findOne({ email, password });
-    console.log(admin);
+    const admin = await Admin.findOne({ email, password: hashPassword(password) });
+
     if (!admin) return res.status(204).json({ message: "No admin found" });
-    res.json(admin);
+
+    const result = {
+      fullName: admin?.fullName,
+      firstName: admin?.firstName,
+      lastName: admin?.lastName,
+      age: admin?.age,
+      email: admin?.email,
+      language: admin?.language,
+      github: admin?.github,
+      linkedIn: admin?.linkedIn,
+      skills: admin?.skills,
+      profilePhoto: admin?.profilePhoto,
+      isAdmin: admin?.isAdmin,
+      members: admin?.members,
+      id: admin?._id.toString(),
+    };
+
+    res.json(result);
   } catch (err) {
     console.log(err);
   }
