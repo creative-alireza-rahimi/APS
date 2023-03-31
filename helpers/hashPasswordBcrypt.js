@@ -1,7 +1,10 @@
 const bcrypt = require('bcrypt');
 
-const saltRounds = 5;
+const saltRounds = 10;
 
-export const hashPassword =(password) => {
+const hashPassword = (password) =>
     bcrypt.hash(password, saltRounds, (err, hash) => hash ? hash : err);
-}
+
+module.exports = {
+    hashPassword,
+};
