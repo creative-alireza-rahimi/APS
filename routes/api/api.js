@@ -41,7 +41,7 @@ router
 
 router
   .route("/login/getAdmin")
-  .get(getAdmin)
+  .post(getAdmin)
 
 
 module.exports = router;
