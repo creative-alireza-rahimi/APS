@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcryptjs = require('bcrypt');
+const task = require("./Tasks");
 
 const AdminSchema = new mongoose.Schema({
   fullName: {
@@ -41,6 +42,7 @@ const AdminSchema = new mongoose.Schema({
   members: {
     type: Array,
   },
+  tasks: {type: [task.schema]}
 });
 
 AdminSchema.pre('save', function(next) {
