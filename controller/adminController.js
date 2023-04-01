@@ -1,6 +1,6 @@
 const Admin = require("../model/Admins");
 const { hashPassword } = require("../helpers/hashPasswordBcrypt");
-// const Item = require("../model/Admins");
+const { randomId } = require("../helpers/randomId");
 
 // @desc - all admin
 // @route - GET '/admins'
@@ -39,7 +39,8 @@ const getAdmin = async (req, res) => {
       profilePhoto: admin?.profilePhoto,
       isAdmin: admin?.isAdmin,
       members: admin?.members,
-      id: admin?._id.toString(),
+      tasks: admin?.tasks,
+      adminId: admin?._id.toString(),
     };
 
     res.json(result);
@@ -79,6 +80,7 @@ const createAdmin = async (req, res) => {
         skills: admin?.skills,
         profilePhoto: admin?.profilePhoto,
         isAdmin: admin?.isAdmin,
+        memberId: randomId()
       }]
     }
   );
@@ -99,7 +101,7 @@ const createAdmin = async (req, res) => {
       profilePhoto: saveAdmin?.profilePhoto,
       isAdmin: saveAdmin?.isAdmin,
       members: saveAdmin?.members,
-      id: saveAdmin?._id.toString(),
+      adminId: saveAdmin?._id.toString(),
     };
 
     res.json(result);
@@ -169,17 +171,19 @@ const newMember = async (req, res) => {
   if (!adminId) return res.status(400).json({ message: "Id parameter is required" });
 
   try {
-    const member = await Admin.findOne({ _id: adminId });
-    if (!member)
+    const admin = await Admin.findOne({ _id: adminId });
+    if (!admin)
       return res
         .status(204)
         .json({ message: `No matches admin with id:${adminId}` });
 
-    if (!member.isAdmin) return;
+    if (!admin.isAdmin) return;
 
-    member.members = [...member.members, members]
+    members.memberId = randomId();
 
-    const saveMember = await member.save();
+    admin.members = [...admin.members, members]
+
+    const saveMember = await admin.save();
 
     const result = {
       fullName: saveMember?.fullName,
@@ -193,8 +197,8 @@ const newMember = async (req, res) => {
       skills: saveMember?.skills,
       profilePhoto: saveMember?.profilePhoto,
       isAdmin: saveMember?.isAdmin,
+      adminId: saveMember?._id.toString(),
       members: saveMember?.members,
-      id: saveMember?._id.toString(),
     }
     console.log("result: ", result);
     // const allAdmins = await member.find(); 
