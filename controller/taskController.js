@@ -1,13 +1,28 @@
 const Task = require("../model/Tasks");
+const Admin = require("../model/Admins");
 
 // @desc - all tasks
 // @route - GET '/'
 // @access - public
-const getAllTasks = async (req, res) => {
+const getTasks = async (req, res) => {
+  const { adminId } = req?.query;
+
   try {
-    const tasks = await Task.find();
-    if (!tasks) return res.status(204).json({ message: "No task found" });
-    res.json(tasks);
+    const admin = await Admin.findOne({ _id: adminId });
+
+    if (!admin) return res.status(204).json({ message: "No admin found" });
+
+    const tasksArray = admin?.tasks?.map(task => ({
+      title: task?.title,
+      description: task?.title,
+      members: task?.members,
+      isCompleted: task?.isCompleted,
+      isEdited: task?.isEdited,
+      isDeleted: task?.isDeleted,
+      taskId: task?._id.toString()
+    }))
+
+    res.json(tasksArray);
   } catch (err) {
     console.log(err);
   }
@@ -17,12 +32,51 @@ const getAllTasks = async (req, res) => {
 // @route - POST '/'
 // @access - public
 const createTask = async (req, res) => {
-  const { title, describe, userId } = req?.body;
-  if (!title || !userId)
-    return res.status(400).json({ message: "title and userId is required" });
+  const { adminId } = req?.body;
+
+  if (!adminId)
+    return res.status(400).json({ message: "adminId is required" });
 
   try {
-    await Task.create({ title, describe, userId });
+    const admin = await Admin.findOne({ _id: adminId });
+
+    admin?.tasks?.push(req?.body);
+
+    const task = await admin.save();
+
+    const tasksArray = task?.tasks?.map(task => ({
+      title: task?.title,
+      description: task?.title,
+      members: task?.members,
+      isCompleted: false,
+      isEdited: false,
+      isDeleted: false,
+      taskId: task?._id.toString(),
+    }))
+
+    res.json(tasksArray);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// @desc - edit a task
+// @route - PUT '/'
+// @access - public
+const editTask = async (req, res) => {
+  const { id, title, describe, userId } = req?.body;
+  if (!id) return res.status(400).json({ message: "Id parameter is required" });
+
+  try {
+    const task = await Task.findOne({ _id: id });
+    if (!task)
+      return res.status(204).json({ message: `No matches task with id:${id}` });
+
+    if (req.body?.title) task.title = title;
+    if (req.body?.describe) task.describe = describe;
+    if (req.body?.userId) task.userId = userId;
+
+    await task.save();
     const allTasks = await Task.find();
     res.json(allTasks);
   } catch (err) {
@@ -30,10 +84,10 @@ const createTask = async (req, res) => {
   }
 };
 
-// @desc - update a task
+// @desc - complete a task
 // @route - PUT '/'
 // @access - public
-const updateTask = async (req, res) => {
+const completeTask = async (req, res) => {
   const { id, title, describe, userId } = req?.body;
   if (!id) return res.status(400).json({ message: "Id parameter is required" });
 
@@ -73,4 +127,4 @@ const deleteTask = async (req, res) => {
   }
 };
 
-module.exports = { getAllTasks, createTask, updateTask, deleteTask };
+module.exports = { getTasks, createTask, deleteTask, completeTask, editTask };
