@@ -52,3 +52,13 @@ export async function newTask(task) {
         console.error(error);
     }
 }
+
+export async function getTasks({ adminId }) {
+    try {
+        const response = await axios.get("http://localhost:5000/tasks/getTasks", { params: { adminId } });
+        console.log("tasks: ", response);
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}
