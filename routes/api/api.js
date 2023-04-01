@@ -1,10 +1,11 @@
 const express = require("express");
 
 const {
-  getAllTasks,
+  getTasks,
   createTask,
-  updateTask,
   deleteTask,
+  completeTask,
+  editTask
 } = require("../../controller/taskController");
 
 const {
@@ -18,13 +19,28 @@ const {
 
 const router = express.Router();
 
+// Task
 router
-  .route("/")
-  .get(getAllTasks)
+  .route("/tasks/getTasks")
+  .get(getTasks)
+
+router
+  .route("/tasks/newTask")
   .post(createTask)
-  .put(updateTask)
+
+router
+  .route("/tasks/editTask")
+  .put(editTask)
+
+router
+  .route("/tasks/deleteTask")
   .delete(deleteTask);
 
+router
+  .route("/tasks/completeTask")
+  .delete(completeTask);
+
+// Admin
 router
   .route("/admin")
   .get(getAllAdmins)
