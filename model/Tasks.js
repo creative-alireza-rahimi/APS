@@ -1,19 +1,28 @@
 const mongoose = require("mongoose");
 
 const TaskSchema = new mongoose.Schema({
+  taskId: {
+    type: Number,
+  },
   title: {
     type: String,
-    maxLength: [15, "maximum length is 15 characters"],
+    maxLength: [60, "maximum length is 60 characters"],
     required: [true, 'field "title" is required'],
   },
-  describe: {
+  description: {
     type: String,
     maxLength: [100, "maximum length is 100 character"],
   },
-  completed: {
+  isCompleted: {
     type: Boolean,
   },
-  userId: {
+  isDeleted: {
+    type: Boolean,
+  },
+  isEdited: {
+    type: Boolean,
+  },
+  members: {
     type: Array,
   },
 });
