@@ -11,7 +11,7 @@ import { splitFullName } from "../../Tools/splitFullName";
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { isAuth } from '../authSlice';
-import { getMember } from '../../components/Members/membersSlice';
+import { getMember } from '../../components/Members/MembersSlice';
 import {
     Button,
     TextField,
