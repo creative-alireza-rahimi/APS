@@ -3,24 +3,20 @@ import { Box, IconButton, Textarea, FormLabel } from '@mui/joy';
 import { FormatBold, FormatItalic } from '@mui/icons-material';
 import { Stack } from '@mui/material';
 
-export const EditTextarea = ({ setDescription }) => {
+export const EditTextarea = ({ taskDescription }) => {
   const [text, setText] = useState('');
   const [italic, setItalic] = useState(false);
   const [isBold, setIsBold] = useState(false);
 
-  const addEmoji = (emoji) => () => setText(`${text}${emoji}`);
-
-  useEffect(() => {
-    setDescription(text)
-  },)
+  const addEmoji = (emoji) => () => taskDescription?.setValue(`${taskDescription?.value}${emoji}`);
 
   return (
     <Stack sx={{ marginTop: '1rem', }}>
       <FormLabel>Description</FormLabel>
       <Textarea
         placeholder="Type in here…"
-        value={text}
-        onChange={(event) => setText(event.target.value)}
+        value={text || taskDescription?.value}
+        onChange={(event) => event.target.value ? taskDescription?.setValue(event.target.value) : setText(event.target.value)}
         minRows={2}
         maxRows={4}
         startDecorator={
