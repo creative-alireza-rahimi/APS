@@ -4,7 +4,7 @@ import { SearchSkills } from "../../../../Form/Skills/SearchSkills";
 import { Language } from "../../../../Form/Language";
 import { splitFullName } from "../../../../Tools/splitFullName";
 import { UploadProfileImage } from "../../../../Form/UploadProfileImage";
-import { newMember } from "../../membersSlice";
+import { newMember } from "../../MembersSlice";
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
@@ -21,7 +21,7 @@ import {
 
 export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
   const admin = useSelector((state) => state.members)
-  const {id: adminId} = admin[0]
+  const { adminId } = admin[0]
 
   const [imagePreview, setImagePreview] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -161,7 +161,7 @@ export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
         <DialogActions>
           <Button onClick={handleDialog}>Cancel</Button>
           <Button onClick={() => {
-              handleNewMember();
+            handleNewMember();
           }}>
             Add Member
           </Button>
