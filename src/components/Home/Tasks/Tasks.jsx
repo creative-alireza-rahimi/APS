@@ -15,20 +15,23 @@ import {
     useMediaQuery,
 } from '@mui/material';
 
-export const Tasks = ({ complete, edit }) => {
+export const Tasks = ({ complete, edit, tasks, updateTasks, adminId }) => {
     const isHorizonal = useMediaQuery('(max-width : 650px)');
     const profile500 = useMediaQuery('(max-width : 500px)');
     const profile450 = useMediaQuery('(max-width : 450px)');
 
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
+    const [editTask, setEditTask] = useState({})
 
     function handleDeleteDialog() {
         setOpenDelete(openDelete => !openDelete)
     }
 
-    function handleEditDialog() {
+    function handleEditDialog(editTasks) {
+
         setOpenEdit(openEdit => !openEdit)
+        setEditTask(editTasks)
     }
 
     function handleComplete() {
@@ -40,84 +43,95 @@ export const Tasks = ({ complete, edit }) => {
         <Stack sx={{ width: "100%" }}>
             <CssBaseline />
             <Container sx={{ padding: "0 !important" }}>
-                <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    flexWrap="wrap"
-                    sx={{
-                        padding: "1rem 0.6rem",
-                        boxShadow: "5px 5px 10px 1px rgb(0 0 0 / 50%)",
-                        borderRadius: "5px",
-                        margin: "1.6rem 0"
-                    }}>
+                {tasks && tasks.map((task, index) =>
                     <Stack
                         direction="row"
-                        alignItems="center"
                         justifyContent="space-between"
-                        sx={{ padding: "1.2rem 0" }}>
+                        alignItems="center"
+                        flexWrap="wrap"
+                        sx={{
+                            padding: "1rem 0.6rem",
+                            boxShadow: "5px 5px 10px 1px rgb(0 0 0 / 50%)",
+                            borderRadius: "5px",
+                            margin: "1.6rem 0"
+                        }}>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            sx={{ padding: "1.2rem 0" }}>
 
-                        <Box width="1.2rem">
-                            1
-                        </Box>
+                            <Box width="1.6rem">
+                                {`${index + 1}`.padStart(2, '0')}
+                            </Box>
 
-                        <Divider orientation="vertical" variant="middle" flexItem />
+                            <Divider orientation="vertical" variant="middle" flexItem />
 
-                        <Stack sx={{ paddingLeft: "1rem" }}>
-                            <Typography variant="h5" gutterBottom noWrap={false} sx={{ fontWeight: "bold" }}>
-                                Title
-                            </Typography>
-                            <Typography paragraph sx={{ maxWidth: "15rem" }}>
-                                Description
-                            </Typography>
-                            <AvatarGroup
-                                max={profile500 ? profile450 ? 4 : 7 : 10}
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "start",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <Avatar alt="image" src="src" />
-                            </AvatarGroup>
+                            <Stack sx={{ paddingLeft: "1rem" }}>
+                                <Typography variant="h5" gutterBottom noWrap={false} sx={{ fontWeight: "bold" }}>
+                                    {task?.title}
+                                </Typography>
+                                <Typography paragraph sx={{ maxWidth: "15rem" }}>
+                                    {task?.description}
+                                </Typography>
+                                <AvatarGroup
+                                    max={profile500 ? profile450 ? 4 : 7 : 10}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "start",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    {task?.members
+                                        ?.sort((a, b) => Number(b.isAdmin) - Number(a.isAdmin))
+                                        ?.map(member =>
+                                            <Avatar
+                                                alt={member?.fullName}
+                                                src={member?.profilePhoto}
+                                            />
+                                        )}
+                                </AvatarGroup>
+                            </Stack>
                         </Stack>
+
+                        {isHorizonal && <Divider sx={{ width: "90%" }} orientation="horizontal" variant="middle" flexItem />}
+
+                        <ButtonGroup
+                            orientation={isHorizonal ? "horizontal" : "vertical"}
+                            aria-label="vertical outlined button group"
+                            sx={{ margin: `${isHorizonal ? "0.6rem auto 0" : "0"}`, minWidth: 120 }}
+                        >
+                            {edit && <Button
+                                key="edit"
+                                sx={{ "&:hover": { background: "#0288d1", color: "#fff", border: "1px solid #0288d1" } }}
+                                onClick={() => handleEditDialog(task)}>
+                                Edit
+                            </Button>}
+                            <Button
+                                key="delete"
+                                sx={{ "&:hover": { background: "#d32f2f", color: "#fff", border: "1px solid #d32f2f" } }}
+                                onClick={handleDeleteDialog}>
+                                Delete
+                            </Button>
+                            {!complete &&
+                                <Button
+                                    key="complete"
+                                    sx={{ "&:hover": { background: "#388e3c", color: "#fff", border: "1px solid #388e3c" } }}
+                                    onClick={handleComplete}>
+                                    Complete
+                                </Button>}
+                            {complete &&
+                                <Button
+                                    key="revert"
+                                    sx={{ "&:hover": { background: "#ff9100", color: "#fff", border: "1px solid #ff9100" } }}
+                                    onClick={handleComplete}>
+                                    Revert
+                                </Button>}
+                        </ButtonGroup>
                     </Stack>
+                )}
 
-                    {isHorizonal && <Divider sx={{ width: "90%" }} orientation="horizontal" variant="middle" flexItem />}
 
-                    <ButtonGroup
-                        orientation={isHorizonal ? "horizontal" : "vertical"}
-                        aria-label="vertical outlined button group"
-                        sx={{ margin: `${isHorizonal ? "0.6rem auto 0" : "0"}`, minWidth: 120 }}
-                    >
-                        {edit && <Button
-                            key="edit"
-                            sx={{ "&:hover": { background: "#0288d1", color: "#fff", border: "1px solid #0288d1" } }}
-                            onClick={handleEditDialog}>
-                            Edit
-                        </Button>}
-                        <Button
-                            key="delete"
-                            sx={{ "&:hover": { background: "#d32f2f", color: "#fff", border: "1px solid #d32f2f" } }}
-                            onClick={handleDeleteDialog}>
-                            Delete
-                        </Button>
-                        {!complete &&
-                            <Button
-                                key="complete"
-                                sx={{ "&:hover": { background: "#388e3c", color: "#fff", border: "1px solid #388e3c" } }}
-                                onClick={handleComplete}>
-                                Complete
-                            </Button>}
-                        {complete &&
-                            <Button
-                                key="revert"
-                                sx={{ "&:hover": { background: "#ff9100", color: "#fff", border: "1px solid #ff9100" } }}
-                                onClick={handleComplete}>
-                                Revert
-                            </Button>}
-                    </ButtonGroup>
-                </Stack>
             </Container>
 
             <DeleteDialog
@@ -127,7 +141,13 @@ export const Tasks = ({ complete, edit }) => {
                 DialogDescription="Delete it and you are gonna need it immediately! 🙂"
                 DeleteBtnTitle="Delete"
                 CancelBtnTitle="Mission Abort" />
-            <EditDialog modalStatus={openEdit} handleEditDialog={handleEditDialog} />
+            <EditDialog
+                updateTasks={updateTasks}
+                editTask={{ value: editTask, setValue: setEditTask }}
+                modalStatus={openEdit}
+                handleEditDialog={handleEditDialog}
+                adminId={adminId}
+            />
 
         </Stack>
     );
