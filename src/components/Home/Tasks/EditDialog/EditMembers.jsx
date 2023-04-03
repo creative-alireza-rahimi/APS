@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
     TextField,
     Autocomplete,
@@ -7,24 +6,22 @@ import {
     Stack
 } from '@mui/material';
 
-export const EditMembers = ({ Image }) => {
-    const [value, setValue] = useState([]);
-
+export const EditMembers = ({ members = [], selectMembers }) => {
     return (
         <FormControl error variant="standard" sx={{ maxWidth: 350, minWidth: "100%", marginTop: "1rem" }}>
             <Autocomplete
-                value={value}
-                onChange={(event, newValue) => {
-                    setValue(newValue);
+                value={selectMembers?.value || []}
+                onChange={(_, newValue) => {
+                    selectMembers?.setValue(newValue);
                 }}
                 multiple
                 id="members"
                 options={members}
                 getOptionLabel={(option) => option.fullName}
-                renderOption={(option) => (
-                    <Stack {...option} direction="row" alignItems="center">
-                        <Avatar alt="Remy Sharp" src="./photo.jpg" sx={{ width: "2rem", height: "2rem", marginRight: "1rem" }} />
-                        {option.key}
+                renderOption={(optionKeys, option) => (
+                    <Stack {...optionKeys} direction="row" alignItems="center">
+                        <Avatar alt={option?.fullName} src={option?.profilePhoto} sx={{ width: "2rem", height: "2rem", marginRight: "1rem" }} />
+                        {option?.fullName}
                     </Stack>
                 )}
                 renderInput={(params) => (
@@ -38,9 +35,3 @@ export const EditMembers = ({ Image }) => {
         </FormControl>
     );
 }
-
-const members = [
-    {
-        fullName: "Alireza Rahimi"
-    },
-];
