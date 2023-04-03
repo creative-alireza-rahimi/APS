@@ -43,10 +43,7 @@ export async function getAdmin({ email, password }) {
 // Tasks
 export async function newTask(task) {
     try {
-        console.log(task);
         const response = await axios.post("http://localhost:5000/tasks/newTask", task);
-        console.log("response: ", response);
-
         return response;
     } catch (error) {
         console.error(error);
@@ -56,7 +53,15 @@ export async function newTask(task) {
 export async function getTasks({ adminId }) {
     try {
         const response = await axios.get("http://localhost:5000/tasks/getTasks", { params: { adminId } });
-        console.log("tasks: ", response);
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function editTasks(task) {
+    try {
+        const response = await axios.put("http://localhost:5000/tasks/editTask", task);
         return response;
     } catch (error) {
         console.error(error);
