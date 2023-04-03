@@ -2,7 +2,7 @@ import { Button, Stack, useMediaQuery } from '@mui/material';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import { themes } from "../../../Tools/colors";
 
-export const TotalTasks = () => {
+export const TotalTasks = ({total}) => {
     const textVisibility = useMediaQuery('(max-width : 500px)');
 
     return (
@@ -22,7 +22,7 @@ export const TotalTasks = () => {
                     }
                 }}
             >
-                {!textVisibility && "Total Tasks:"}
+                {!textVisibility && `Total Tasks:`} {total}
             </Button>
         </Stack>
     );
