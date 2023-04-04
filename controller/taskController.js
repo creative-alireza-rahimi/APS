@@ -150,5 +150,60 @@ const completeTask = async (req, res) => {
   }
 };
 
+// @desc - delete a task
+// @route - PUT '/'
+// @access - public
+const deleteTask = async (req, res) => {
+  const { adminId, taskId } = req?.body;
+  if (!adminId || !taskId) return res.status(400).json({ message: "adminId and taskId are both required" });
+
+  try {
+    const admin = await Admin.findOne({ _id: adminId });
+    if (!admin)
+      return res.status(204).json({ message: `no matches admin with id:${adminId}` });
+
+    admin?.tasks
+      ?.forEach(task => {
+        if (task?._id?.toString() === taskId) task.isDeleted = true;
+      })
+    const deletedTaskAdmin = await admin.save();
+
+    const newTasks = [];
+    deletedTaskAdmin?.tasks?.map(task => {
+      if (!task?.isDeleted) {
+        newTasks.push(Object.assign({}, {
+          taskId: task?._id?.toString(),
+          title: task?.title,
+          description: task?.description,
+          isCompleted: task?.isCompleted,
+          isDeleted: task?.isDeleted,
+          isEdited: task?.isEdited,
+          members: task?.members,
+        }))
+      }
+    })
+
+    const result = {
+      fullName: deletedTaskAdmin?.fullName,
+      firstName: deletedTaskAdmin?.firstName,
+      lastName: deletedTaskAdmin?.lastName,
+      age: deletedTaskAdmin?.age,
+      email: deletedTaskAdmin?.email,
+      language: deletedTaskAdmin?.language,
+      github: deletedTaskAdmin?.github,
+      linkedIn: deletedTaskAdmin?.linkedIn,
+      skills: deletedTaskAdmin?.skills,
+      profilePhoto: deletedTaskAdmin?.profilePhoto,
+      isAdmin: deletedTaskAdmin?.isAdmin,
+      members: deletedTaskAdmin?.members,
+      tasks: newTasks,
+      adminId: deletedTaskAdmin?._id.toString(),
+    };
+
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 module.exports = { getTasks, createTask, deleteTask, completeTask, editTask };
