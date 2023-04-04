@@ -34,7 +34,7 @@ router
 
 router
   .route("/tasks/deleteTask")
-  .delete(deleteTask);
+  .put(deleteTask);
 
 router
   .route("/tasks/completeTask")
