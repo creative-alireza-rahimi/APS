@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { deleteTasks } from "../../../../API/API";
 import {
     Button,
     Dialog,
@@ -5,7 +7,8 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Divider
+    Divider,
+    LinearProgress
 } from '@mui/material';
 
 export const DeleteDialog = ({
@@ -14,11 +17,22 @@ export const DeleteDialog = ({
     DialogDescription,
     DeleteBtnTitle,
     CancelBtnTitle,
-    handleDeleteDialog }) => {
+    handleDeleteDialog,
+    deleteTask,
+    filteredTasks }) => {
 
-    function handleDelete() {
-        console.log("delete");
-        handleDeleteDialog()
+    const [isLoading, setIsLoading] = useState(false);
+
+    async function handleDelete() {
+        setIsLoading(true)
+
+        const newTasks = await deleteTasks(deleteTask)
+
+        if (newTasks.status === 200) {
+            filteredTasks(newTasks?.data?.tasks)
+            setIsLoading(false)
+            handleDeleteDialog()
+        }
     }
 
     return (
@@ -28,6 +42,7 @@ export const DeleteDialog = ({
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
+            {isLoading && <LinearProgress />}
             <DialogTitle id="alert-dialog-title">
                 {DeleteDialogTitle}
             </DialogTitle>
@@ -41,7 +56,7 @@ export const DeleteDialog = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleDeleteDialog}>{CancelBtnTitle}</Button>
-                <Button onClick={handleDelete} autoFocus>
+                <Button onClick={handleDelete}>
                     {DeleteBtnTitle}
                 </Button>
             </DialogActions>
