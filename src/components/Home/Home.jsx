@@ -16,7 +16,7 @@ import {
 
 export const Home = () => {
     const members = useSelector(state => state.members)
-    const [hasComplete, setHasComplete] = useState(true)
+    const [hasComplete, setHasComplete] = useState([])
     const [openAdd, setOpenAdd] = useState(false);
     const [tasks, setTasks] = useState([])
     const { adminId } = members?.at(0);
@@ -27,8 +27,13 @@ export const Home = () => {
 
     useEffect(() => {
         getTasks({ adminId })
-            .then(tasks => setTasks(tasks.data))
-    }, [adminId, openAdd])
+            .then(tasksArray => {
+                tasksArray?.data?.map(taskArray => {
+                    if(taskArray?.isCompleted) setHasComplete([...hasComplete, taskArray]);
+                    else setTasks([...tasks, taskArray])
+                })
+            })
+    }, [])
 
     return (
         <>
@@ -62,9 +67,9 @@ export const Home = () => {
                         <TotalTasks total={tasks?.length} />
                     </Stack>
 
-                    <Tasks edit tasks={tasks} updateTasks={setTasks} adminId={adminId} />
+                    <Tasks edit tasks={tasks} updateTasks={setTasks} filteredTasks={setTasks} adminId={adminId} />
 
-                    {hasComplete &&
+                    {hasComplete.length > 0 &&
                         <>
                             <Divider variant="middle" role="tasks" sx={{ width: "100%" }}>
                                 <Chip label="COMPLETED TASKS" />
@@ -72,7 +77,7 @@ export const Home = () => {
 
                             <DeleteTasks title="Completed Tasks" />
 
-                            <Tasks complete />
+                            <Tasks complete tasks={hasComplete}/>
                         </>
                     }
                 </Stack>
