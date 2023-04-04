@@ -15,7 +15,7 @@ import {
     useMediaQuery,
 } from '@mui/material';
 
-export const Tasks = ({ complete, edit, tasks, updateTasks, adminId }) => {
+export const Tasks = ({ complete, edit, tasks, updateTasks, filteredTasks, adminId }) => {
     const isHorizonal = useMediaQuery('(max-width : 650px)');
     const profile500 = useMediaQuery('(max-width : 500px)');
     const profile450 = useMediaQuery('(max-width : 450px)');
@@ -23,13 +23,14 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, adminId }) => {
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [editTask, setEditTask] = useState({})
+    const [deleteTask, setDeleteTask] = useState({})
 
-    function handleDeleteDialog() {
+    function handleDeleteDialog(deleteTaskId) {
         setOpenDelete(openDelete => !openDelete)
+        setDeleteTask({ adminId, deleteTaskId })
     }
 
     function handleEditDialog(editTasks) {
-
         setOpenEdit(openEdit => !openEdit)
         setEditTask(editTasks)
     }
@@ -110,7 +111,7 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, adminId }) => {
                             <Button
                                 key="delete"
                                 sx={{ "&:hover": { background: "#d32f2f", color: "#fff", border: "1px solid #d32f2f" } }}
-                                onClick={handleDeleteDialog}>
+                                onClick={() => handleDeleteDialog(task?.taskId)}>
                                 Delete
                             </Button>
                             {!complete &&
@@ -135,12 +136,14 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, adminId }) => {
             </Container>
 
             <DeleteDialog
+                filteredTasks={filteredTasks}
                 modalStatus={openDelete}
                 handleDeleteDialog={handleDeleteDialog}
                 DeleteDialogTitle={`Delete ${"Title"}`}
                 DialogDescription="Delete it and you are gonna need it immediately! 🙂"
                 DeleteBtnTitle="Delete"
-                CancelBtnTitle="Mission Abort" />
+                CancelBtnTitle="Mission Abort"
+                deleteTask={deleteTask} />
             <EditDialog
                 updateTasks={updateTasks}
                 editTask={{ value: editTask, setValue: setEditTask }}
