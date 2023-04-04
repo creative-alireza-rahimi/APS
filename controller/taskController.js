@@ -65,7 +65,66 @@ const createTask = async (req, res) => {
   }
 };
 
+// @desc - edit a task
+// @route - PUT '/'
+// @access - public
+const editTask = async (req, res) => {
+  const editedTask = req?.body;
+  if (!editedTask?.adminId) return res.status(400).json({ message: "adminId parameter is required" });
 
+  try {
+    const admin = await Admin.findOne({ _id: editedTask?.adminId });
+    if (!admin)
+      return res.status(204).json({ message: `No matches admin with id:${editedTask?.adminId}` });
+
+    admin?.tasks
+      ?.forEach(oldTask => {
+        if (oldTask?._id?.toString() === editedTask?.taskId) {
+          oldTask.title = editedTask?.title;
+          oldTask.description = editedTask?.description;
+          oldTask.isEdited = editedTask?.isEdited;
+          oldTask.members = editedTask?.members;
+        }
+      })
+    const savedAdmin = await admin.save();
+
+    const newTasks = [];
+    savedAdmin?.tasks?.map(task => {
+      if (!task?.isDeleted) {
+        newTasks.push(Object.assign({}, {
+          taskId: task?._id?.toString(),
+          title: task?.title,
+          description: task?.description,
+          isCompleted: task?.isCompleted,
+          isDeleted: task?.isDeleted,
+          isEdited: task?.isEdited,
+          members: task?.members,
+        }))
+      }
+    })
+
+    const result = {
+      fullName: savedAdmin?.fullName,
+      firstName: savedAdmin?.firstName,
+      lastName: savedAdmin?.lastName,
+      age: savedAdmin?.age,
+      email: savedAdmin?.email,
+      language: savedAdmin?.language,
+      github: savedAdmin?.github,
+      linkedIn: savedAdmin?.linkedIn,
+      skills: savedAdmin?.skills,
+      profilePhoto: savedAdmin?.profilePhoto,
+      isAdmin: savedAdmin?.isAdmin,
+      members: savedAdmin?.members,
+      tasks: newTasks,
+      adminId: savedAdmin?._id.toString(),
+    };
+
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // @desc - complete a task
 // @route - PUT '/'
