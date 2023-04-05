@@ -69,7 +69,7 @@ export const skills = [
         "title": "Flask"
     },
     {
-        "title": "Spring Boot"
+        "title": "Spring"
     },
     {
         "title": "Ruby"
@@ -96,13 +96,13 @@ export const skills = [
         "title": "SQLite"
     },
     {
-        "title": "Amazon Web Services (AWS)"
+        "title": "(AWS)"
     },
     {
-        "title": "Microsoft Azure"
+        "title": "Azure"
     },
     {
-        "title": "Google Cloud Platform (GCP)"
+        "title": "(GCP)"
     },
     {
         "title": "TensorFlow"
