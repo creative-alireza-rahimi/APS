@@ -30,10 +30,10 @@ export const Home = () => {
     }
 
     function handleErrorMessage() {
-        setIsError(false);
+        setIsError(true);
     }
 
-    clearTimeOut = setTimeout(handleErrorMessage, 15000);
+    clearTimeOut = setTimeout(handleErrorMessage, 20000);
 
     useEffect(() => {
         setTasks([]);
@@ -41,7 +41,7 @@ export const Home = () => {
 
         getTasks({ adminId })
             .then(tasksArray => {
-                if (tasksArray?.status === 200){
+                if (tasksArray?.status === 200) {
                     clearTimeout(clearTimeOut);
                 }
 
@@ -49,7 +49,6 @@ export const Home = () => {
                 const normalTasks = [];
 
                 tasksArray?.data?.map(taskArray => {
-                    console.log(taskArray);
                     if (taskArray?.isCompleted) completedTasks.push(taskArray);
                     else normalTasks.push(taskArray)
                 })
@@ -91,7 +90,13 @@ export const Home = () => {
                         <TotalTasks total={tasks?.length + hasComplete?.length} />
                     </Stack>
 
-                    <Tasks edit tasks={tasks} updateTasks={setTasks} isReq={setIsReq} adminId={adminId} />
+                    <Tasks
+                        edit
+                        tasks={tasks}
+                        updateTasks={setTasks}
+                        isReq={setIsReq}
+                        errorMessage={handleErrorMessage}
+                        adminId={adminId} />
 
                     {hasComplete.length > 0 &&
                         <>
