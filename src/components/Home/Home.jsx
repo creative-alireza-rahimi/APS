@@ -5,6 +5,7 @@ import { AddTasks } from "./Tasks/AddTasks/AddTasks";
 import { TotalTasks } from "./Tasks/TotalTasks";
 import { useSelector } from 'react-redux';
 import { getTasks } from "../../API/API";
+import { FailedMessage } from "./FailedMessage";
 import {
     CssBaseline,
     Container,
@@ -12,20 +13,27 @@ import {
     Avatar,
     Divider,
     Chip,
-    CircularProgress
 } from '@mui/material';
 
 export const Home = () => {
+    let clearTimeOut;
     const members = useSelector(state => state.members)
     const [hasComplete, setHasComplete] = useState([])
     const [openAdd, setOpenAdd] = useState(false);
     const [tasks, setTasks] = useState([])
     const [isReq, setIsReq] = useState(false);
+    const [isError, setIsError] = useState(true);
     const { adminId } = members?.at(0);
 
     function handleAddDialog() {
         setOpenAdd(openAdd => !openAdd)
     }
+
+    function handleErrorMessage() {
+        setIsError(false);
+    }
+
+    clearTimeOut = setTimeout(handleErrorMessage, 15000);
 
     useEffect(() => {
         setTasks([]);
@@ -33,6 +41,10 @@ export const Home = () => {
 
         getTasks({ adminId })
             .then(tasksArray => {
+                if (tasksArray?.status === 200){
+                    clearTimeout(clearTimeOut);
+                }
+
                 const completedTasks = [];
                 const normalTasks = [];
 
@@ -92,7 +104,7 @@ export const Home = () => {
                             <Tasks complete tasks={hasComplete} />
                         </>
                     }
-                          {(!tasks.length || !hasComplete) && <CircularProgress />}
+                    {(!tasks?.length || !hasComplete?.length) && <FailedMessage err={isError} />}
 
                 </Stack>
             </Container>
