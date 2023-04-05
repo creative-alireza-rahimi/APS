@@ -76,3 +76,12 @@ export async function deleteTasks({ adminId, deleteTaskId: taskId }) {
         console.error(error);
     }
 }
+
+export async function completeTasks({ adminId, taskId }) {
+    try {
+        const response = await axios.put("http://localhost:5000/tasks/completeTask", { adminId, taskId });
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}
