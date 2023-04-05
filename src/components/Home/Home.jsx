@@ -12,6 +12,7 @@ import {
     Avatar,
     Divider,
     Chip,
+    CircularProgress
 } from '@mui/material';
 
 export const Home = () => {
@@ -19,6 +20,7 @@ export const Home = () => {
     const [hasComplete, setHasComplete] = useState([])
     const [openAdd, setOpenAdd] = useState(false);
     const [tasks, setTasks] = useState([])
+    const [isReq, setIsReq] = useState(false);
     const { adminId } = members?.at(0);
 
     function handleAddDialog() {
@@ -26,14 +28,24 @@ export const Home = () => {
     }
 
     useEffect(() => {
+        setTasks([]);
+        setHasComplete([]);
+
         getTasks({ adminId })
             .then(tasksArray => {
+                const completedTasks = [];
+                const normalTasks = [];
+
                 tasksArray?.data?.map(taskArray => {
-                    if(taskArray?.isCompleted) setHasComplete([...hasComplete, taskArray]);
-                    else setTasks([...tasks, taskArray])
+                    console.log(taskArray);
+                    if (taskArray?.isCompleted) completedTasks.push(taskArray);
+                    else normalTasks.push(taskArray)
                 })
+
+                setTasks(normalTasks.reverse())
+                setHasComplete(completedTasks.reverse())
             })
-    }, [])
+    }, [isReq])
 
     return (
         <>
@@ -61,13 +73,13 @@ export const Home = () => {
 
                     <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
                         <Stack direction="row">
-                            <AddTasks openAdd={openAdd} handleAddDialog={handleAddDialog} />
+                            <AddTasks isReq={setIsReq} openAdd={openAdd} handleAddDialog={handleAddDialog} />
                             <DeleteTasks title="Tasks" />
                         </Stack>
-                        <TotalTasks total={tasks?.length} />
+                        <TotalTasks total={tasks?.length + hasComplete?.length} />
                     </Stack>
 
-                    <Tasks edit tasks={tasks} updateTasks={setTasks} filteredTasks={setTasks} adminId={adminId} />
+                    <Tasks edit tasks={tasks} updateTasks={setTasks} isReq={setIsReq} adminId={adminId} />
 
                     {hasComplete.length > 0 &&
                         <>
@@ -77,9 +89,11 @@ export const Home = () => {
 
                             <DeleteTasks title="Completed Tasks" />
 
-                            <Tasks complete tasks={hasComplete}/>
+                            <Tasks complete tasks={hasComplete} />
                         </>
                     }
+                          {(!tasks.length || !hasComplete) && <CircularProgress />}
+
                 </Stack>
             </Container>
         </>
