@@ -19,7 +19,7 @@ export const DeleteDialog = ({
     CancelBtnTitle,
     handleDeleteDialog,
     deleteTask,
-    filteredTasks }) => {
+    isReq }) => {
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -29,8 +29,8 @@ export const DeleteDialog = ({
         const newTasks = await deleteTasks(deleteTask)
 
         if (newTasks.status === 200) {
-            filteredTasks(newTasks?.data?.tasks)
             setIsLoading(false)
+            isReq(req => !req)
             handleDeleteDialog()
         }
     }
