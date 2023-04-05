@@ -49,15 +49,19 @@ const createTask = async (req, res) => {
 
     const task = await admin.save();
 
-    const tasksArray = task?.tasks?.map(task => ({
-      title: task?.title,
-      description: task?.title,
-      members: task?.members,
-      isCompleted: false,
-      isEdited: false,
-      isDeleted: false,
-      taskId: task?._id.toString(),
-    }))
+    const tasksArray = task?.tasks?.map(task => {
+      if (!task?.isDeleted) {
+        return {
+          title: task?.title,
+          description: task?.title,
+          members: task?.members,
+          isCompleted: false,
+          isEdited: false,
+          isDeleted: false,
+          taskId: task?._id.toString(),
+        } 
+      }
+    }).filter(Boolean)
 
     res.json(tasksArray);
   } catch (err) {
