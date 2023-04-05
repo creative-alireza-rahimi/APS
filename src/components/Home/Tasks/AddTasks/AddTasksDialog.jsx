@@ -14,7 +14,7 @@ import {
     LinearProgress
 } from '@mui/material';
 
-export const AddTasksDialog = ({ modalStatus, handleAddDialog }) => {
+export const AddTasksDialog = ({ modalStatus, handleAddDialog, isReq }) => {
     const taskMembers = useSelector(state => state.members)
 
     const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +45,7 @@ export const AddTasksDialog = ({ modalStatus, handleAddDialog }) => {
 
         if (task.status === 200) {
             setIsLoading(false)
+            isReq(req => !req)
             handleAdd();
         }
     }
