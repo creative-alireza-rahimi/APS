@@ -134,21 +134,53 @@ const editTask = async (req, res) => {
 // @route - PUT '/'
 // @access - public
 const completeTask = async (req, res) => {
-  const { id, title, describe, userId } = req?.body;
-  if (!id) return res.status(400).json({ message: "Id parameter is required" });
+  const { adminId, taskId } = req?.body;
+  if (!adminId || !taskId) return res.status(400).json({ message: "adminId and taskId are both required" });
 
   try {
-    const task = await Task.findOne({ _id: id });
-    if (!task)
-      return res.status(204).json({ message: `No matches task with id:${id}` });
+    const admin = await Admin.findOne({ _id: adminId });
+    if (!admin)
+      return res.status(204).json({ message: `no matches admin with id:${adminId}` });
 
-    if (req.body?.title) task.title = title;
-    if (req.body?.describe) task.describe = describe;
-    if (req.body?.userId) task.userId = userId;
+    admin?.tasks
+      ?.forEach(task => {
+        if (task?._id?.toString() === taskId) task.isCompleted = true;
+      })
+    const completedTaskAdmin = await admin.save();
 
-    await task.save();
-    const allTasks = await Task.find();
-    res.json(allTasks);
+    const newTasks = [];
+    completedTaskAdmin?.tasks?.map(task => {
+      if (!task?.isDeleted) {
+        newTasks.push(Object.assign({}, {
+          taskId: task?._id?.toString(),
+          title: task?.title,
+          description: task?.description,
+          isCompleted: task?.isCompleted,
+          isDeleted: task?.isDeleted,
+          isEdited: task?.isEdited,
+          members: task?.members,
+        }))
+      }
+    })
+
+    const result = {
+      fullName: completedTaskAdmin?.fullName,
+      firstName: completedTaskAdmin?.firstName,
+      lastName: completedTaskAdmin?.lastName,
+      age: completedTaskAdmin?.age,
+      email: completedTaskAdmin?.email,
+      language: completedTaskAdmin?.language,
+      github: completedTaskAdmin?.github,
+      linkedIn: completedTaskAdmin?.linkedIn,
+      skills: completedTaskAdmin?.skills,
+      profilePhoto: completedTaskAdmin?.profilePhoto,
+      isAdmin: completedTaskAdmin?.isAdmin,
+      members: completedTaskAdmin?.members,
+      tasks: newTasks,
+      adminId: completedTaskAdmin?._id.toString(),
+    };
+
+    res.json(result);
   } catch (err) {
     console.log(err);
   }
