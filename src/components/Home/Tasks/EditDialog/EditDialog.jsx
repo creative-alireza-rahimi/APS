@@ -36,7 +36,7 @@ export const EditDialog = ({ modalStatus, handleEditDialog, editTask, updateTask
         const editedTaskResult = await editTasks(editedTask);
 
         if (editedTaskResult.status === 200) {
-            updateTasks(editedTaskResult?.data?.tasks)
+            updateTasks(editedTaskResult?.data?.tasks.reverse())
             setIsLoading(false)
             handleEditDialog();
         }
