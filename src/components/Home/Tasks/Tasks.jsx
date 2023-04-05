@@ -15,7 +15,7 @@ import {
     useMediaQuery,
 } from '@mui/material';
 
-export const Tasks = ({ complete, edit, tasks, updateTasks, filteredTasks, adminId }) => {
+export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, adminId }) => {
     const isHorizonal = useMediaQuery('(max-width : 650px)');
     const profile500 = useMediaQuery('(max-width : 500px)');
     const profile450 = useMediaQuery('(max-width : 450px)');
@@ -136,7 +136,7 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, filteredTasks, admin
             </Container>
 
             <DeleteDialog
-                filteredTasks={filteredTasks}
+                isReq={isReq}
                 modalStatus={openDelete}
                 handleDeleteDialog={handleDeleteDialog}
                 DeleteDialogTitle={`Delete ${"Title"}`}
