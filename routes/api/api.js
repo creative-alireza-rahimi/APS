@@ -38,7 +38,7 @@ router
 
 router
   .route("/tasks/completeTask")
-  .delete(completeTask);
+  .put(completeTask);
 
 // Admin
 router
