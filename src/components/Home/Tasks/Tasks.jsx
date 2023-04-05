@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DeleteDialog } from "./DeleteDialog/DeleteDialog";
 import { EditDialog } from "./EditDialog/EditDialog";
+import { completeTasks } from "../../../API/API"
 import {
     CssBaseline,
     Container,
@@ -14,16 +15,19 @@ import {
     Typography,
     useMediaQuery,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 
-export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, adminId }) => {
+export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage, adminId }) => {
     const isHorizonal = useMediaQuery('(max-width : 650px)');
     const profile500 = useMediaQuery('(max-width : 500px)');
     const profile450 = useMediaQuery('(max-width : 450px)');
 
+    const [loading, setLoading] = useState(false)
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [editTask, setEditTask] = useState({})
     const [deleteTask, setDeleteTask] = useState({})
+    const [completeTaskId, setCompleteTaskId] = useState(0);
 
     function handleDeleteDialog(deleteTaskId) {
         setOpenDelete(openDelete => !openDelete)
@@ -35,9 +39,17 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, adminId }) =>
         setEditTask(editTasks)
     }
 
-    function handleComplete() {
-        console.log("complete");
+    async function handleComplete(taskId) {
+        setLoading(true)
+        setCompleteTaskId(taskId)
+        const completedTasks = await completeTasks({ adminId, taskId });
 
+        if (completedTasks?.status === 200) {
+            setLoading(false)
+        }
+
+        errorMessage();
+        isReq(req => !req)
     }
 
     return (
@@ -115,12 +127,20 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, adminId }) =>
                                 Delete
                             </Button>
                             {!complete &&
-                                <Button
+                                <LoadingButton
                                     key="complete"
-                                    sx={{ "&:hover": { background: "#388e3c", color: "#fff", border: "1px solid #388e3c" } }}
-                                    onClick={handleComplete}>
-                                    Complete
-                                </Button>}
+                                    size="small"
+                                    onClick={() => handleComplete(task?.taskId)}
+                                    loading={loading && completeTaskId === task?.taskId}
+                                    sx={{
+                                        "&:hover": { background: "#388e3c", color: "#fff", border: "1px solid #388e3c" },
+                                        "&:disabled": { border: "1px solid rgba(25, 118, 210, 0.5)" }
+                                    }}
+                                    variant="outlined"
+                                >
+                                    <span>Complete</span>
+                                </LoadingButton>
+                            }
                             {complete &&
                                 <Button
                                     key="revert"
