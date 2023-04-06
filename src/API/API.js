@@ -85,3 +85,12 @@ export async function completeTasks({ adminId, taskId }) {
         console.error(error);
     }
 }
+
+export async function revertTasks({ adminId, taskId }) {
+    try {
+        const response = await axios.put("http://localhost:5000/tasks/revertTask", { adminId, taskId });
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}
