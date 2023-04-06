@@ -59,7 +59,7 @@ const createTask = async (req, res) => {
           isEdited: false,
           isDeleted: false,
           taskId: task?._id.toString(),
-        } 
+        }
       }
     }).filter(Boolean)
 
@@ -186,6 +186,64 @@ const completeTask = async (req, res) => {
   }
 };
 
+// @desc - revert a task
+// @route - PUT '/tasks/revertTask'
+// @access - public
+const revertTask = async (req, res) => {
+  const { adminId, taskId } = req?.body;
+  if (!adminId || !taskId) return res.status(400).json({ message: "adminId and taskId are both required" });
+
+  try {
+    const admin = await Admin.findOne({ _id: adminId });
+    if (!admin)
+      return res.status(204).json({ message: `no matches admin with id:${adminId}` });
+
+    admin?.tasks
+      ?.forEach(task => {
+        if (task?._id?.toString() === taskId) task.isCompleted = false;
+      })
+    const revertedTaskAdmin = await admin.save();
+
+    const newTasks = [];
+    revertedTaskAdmin?.tasks?.map(task => {
+      if (!task?.isDeleted) {
+        newTasks.push(Object.assign({}, {
+          taskId: task?._id?.toString(),
+          title: task?.title,
+          description: task?.description,
+          isCompleted: task?.isCompleted,
+          isDeleted: task?.isDeleted,
+          isEdited: task?.isEdited,
+          members: task?.members,
+        }))
+      }
+    })
+
+    const result = {
+      fullName: revertedTaskAdmin?.fullName,
+      firstName: revertedTaskAdmin?.firstName,
+      lastName: revertedTaskAdmin?.lastName,
+      age: revertedTaskAdmin?.age,
+      email: revertedTaskAdmin?.email,
+      language: revertedTaskAdmin?.language,
+      github: revertedTaskAdmin?.github,
+      linkedIn: revertedTaskAdmin?.linkedIn,
+      skills: revertedTaskAdmin?.skills,
+      profilePhoto: revertedTaskAdmin?.profilePhoto,
+      isAdmin: revertedTaskAdmin?.isAdmin,
+      members: revertedTaskAdmin?.members,
+      tasks: newTasks,
+      adminId: revertedTaskAdmin?._id.toString(),
+    };
+
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
 // @desc - delete a task
 // @route - PUT '/'
 // @access - public
@@ -242,4 +300,12 @@ const deleteTask = async (req, res) => {
   }
 };
 
-module.exports = { getTasks, createTask, deleteTask, completeTask, editTask };
+module.exports = {
+  getTasks,
+  createTask,
+  deleteTask,
+  completeTask,
+  editTask,
+  revertTask,
+  deleteAllTasks
+};
