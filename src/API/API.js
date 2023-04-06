@@ -103,3 +103,12 @@ export async function deleteAllTasks({ adminId }) {
         console.error(error);
     }
 }
+
+export async function deleteCompletedTasks({ adminId }) {
+    try {
+        const response = await axios.put("http://localhost:5000/tasks/deleteCompletedTasks", { adminId });
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}
