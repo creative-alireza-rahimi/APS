@@ -242,7 +242,46 @@ const revertTask = async (req, res) => {
   }
 };
 
+// @desc - delete all task
+// @route - PUT '/tasks/deleteAllTasks'
+// @access - public
+const deleteAllTasks = async (req, res) => {
+  const { adminId } = req?.body;
+  if (!adminId) return res.status(400).json({ message: "adminId is required" });
 
+  try {
+    const admin = await Admin.findOne({ _id: adminId });
+    if (!admin)
+      return res.status(204).json({ message: `no matches admin with id:${adminId}` });
+
+    admin?.tasks
+      ?.forEach(task => {
+        task.isDeleted = true;
+      })
+    const newAdmin = await admin.save();
+
+    const result = {
+      fullName: newAdmin?.fullName,
+      firstName: newAdmin?.firstName,
+      lastName: newAdmin?.lastName,
+      age: newAdmin?.age,
+      email: newAdmin?.email,
+      language: newAdmin?.language,
+      github: newAdmin?.github,
+      linkedIn: newAdmin?.linkedIn,
+      skills: newAdmin?.skills,
+      profilePhoto: newAdmin?.profilePhoto,
+      isAdmin: newAdmin?.isAdmin,
+      members: newAdmin?.members,
+      tasks: [],
+      adminId: newAdmin?._id.toString(),
+    };
+
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // @desc - delete a task
 // @route - PUT '/'
