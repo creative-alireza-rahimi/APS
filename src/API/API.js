@@ -94,3 +94,12 @@ export async function revertTasks({ adminId, taskId }) {
         console.error(error);
     }
 }
+
+export async function deleteAllTasks({ adminId }) {
+    try {
+        const response = await axios.put("http://localhost:5000/tasks/deleteAllTasks", { adminId });
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}
