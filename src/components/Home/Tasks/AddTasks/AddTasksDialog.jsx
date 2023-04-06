@@ -14,7 +14,7 @@ import {
     LinearProgress
 } from '@mui/material';
 
-export const AddTasksDialog = ({ modalStatus, handleAddDialog, isReq }) => {
+export const AddTasksDialog = ({ modalStatus, handleAddDialog, isReq, errorMessage }) => {
     const taskMembers = useSelector(state => state.members)
 
     const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +32,6 @@ export const AddTasksDialog = ({ modalStatus, handleAddDialog, isReq }) => {
 
     async function handleSubmitTask() {
         setIsLoading(true)
-
         const task = await newTask({
             title,
             description,
@@ -47,6 +46,8 @@ export const AddTasksDialog = ({ modalStatus, handleAddDialog, isReq }) => {
             setIsLoading(false)
             isReq(req => !req)
             handleAdd();
+            errorMessage();
+            setSelectedMembers([]);
         }
     }
 

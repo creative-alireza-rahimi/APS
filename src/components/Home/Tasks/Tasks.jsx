@@ -47,9 +47,9 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
 
         if (completedTasks?.status === 200) {
             setLoading(false);
+            errorMessage();
         }
 
-        errorMessage();
         isReq(req => !req);
     }
 
@@ -60,9 +60,9 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
 
         if (revertedTasks?.status === 200) {
             setLoading(false);
+            errorMessage();
         }
 
-        errorMessage();
         isReq(req => !req);
     }
 
@@ -113,6 +113,7 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
                                         ?.sort((a, b) => Number(b.isAdmin) - Number(a.isAdmin))
                                         ?.map(member =>
                                             <Avatar
+                                                key={member?.memeberId}
                                                 alt={member?.fullName}
                                                 src={member?.profilePhoto}
                                             />

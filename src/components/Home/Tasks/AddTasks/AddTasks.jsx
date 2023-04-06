@@ -2,7 +2,7 @@ import { Button, Stack } from '@mui/material';
 import { AddTasksDialog } from "./AddTasksDialog";
 import AddIcon from '@mui/icons-material/Add';
 
-export const AddTasks = ({ openAdd, handleAddDialog, isReq }) => {
+export const AddTasks = ({ openAdd, handleAddDialog, isReq, errorMessage }) => {
 
     return (
         <Stack alignSelf="flex-start">
@@ -21,6 +21,7 @@ export const AddTasks = ({ openAdd, handleAddDialog, isReq }) => {
             </Button>
             <AddTasksDialog
                 isReq={isReq}
+                errorMessage={errorMessage}
                 modalStatus={openAdd}
                 handleAddDialog={handleAddDialog} />
         </Stack>
