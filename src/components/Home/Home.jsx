@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Tasks } from "./Tasks/Tasks";
 import { DeleteTasks } from "./Tasks/DeleteTasks";
+import { DeleteCompletedTasks } from "./Tasks/DeleteCompletedTasks";
 import { AddTasks } from "./Tasks/AddTasks/AddTasks";
 import { TotalTasks } from "./Tasks/TotalTasks";
 import { useSelector } from 'react-redux';
@@ -35,18 +36,13 @@ export const Home = () => {
         setIsError(true);
     }
 
-    clearTimeOut = setTimeout(handleErrorMessage, 20000);
-
     useEffect(() => {
         setTasks([]);
         setHasComplete([]);
 
         getTasks({ adminId })
             .then(tasksArray => {
-                if (tasksArray?.status === 200) {
-                    clearTimeout(clearTimeOut);
-                    setIsError(false);
-                }
+                setIsError(false);
 
                 const completedTasks = [];
                 const normalTasks = [];
@@ -89,8 +85,8 @@ export const Home = () => {
 
                     <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
                         <Stack direction="row">
-                            <AddTasks isReq={setIsReq} openAdd={openAdd} handleAddDialog={handleAddDialog} />
-                            <DeleteTasks title="Tasks" adminId={adminId} isReq={setIsReq}/>
+                            <AddTasks isReq={setIsReq} openAdd={openAdd} handleAddDialog={handleAddDialog} errorMessage={handleErrorMessage} />
+                            <DeleteTasks title="Tasks" adminId={adminId} isReq={setIsReq} />
                         </Stack>
                         <TotalTasks total={tasks?.length + hasComplete?.length} />
                     </Stack>
@@ -116,7 +112,7 @@ export const Home = () => {
                                 <Chip label="COMPLETED TASKS" />
                             </Divider>
 
-                            <DeleteTasks title="Completed Tasks" />
+                            <DeleteCompletedTasks title="Completed Tasks" adminId={adminId} isReq={setIsReq} errorMessage={handleErrorMessage}/>
 
                             <Tasks
                                 complete
