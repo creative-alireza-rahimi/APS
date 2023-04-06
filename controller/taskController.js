@@ -283,6 +283,63 @@ const deleteAllTasks = async (req, res) => {
   }
 };
 
+// @desc - delete all task
+// @route - PUT '/tasks/deleteAllTasks'
+// @access - public
+const deleteCompletedTasks = async (req, res) => {
+  const { adminId } = req?.body;
+  if (!adminId) return res.status(400).json({ message: "adminId is required" });
+
+  try {
+    const admin = await Admin.findOne({ _id: adminId });
+    if (!admin)
+      return res.status(204).json({ message: `no matches admin with id:${adminId}` });
+
+    admin?.tasks
+      ?.forEach(task => {
+        if (task?.isCompleted === true) task.isDeleted = true;
+      })
+
+    const newAdmin = await admin.save();
+
+    const newTasks = [];
+    newAdmin?.tasks?.map(task => {
+      if (!task?.isDeleted) {
+        newTasks.push(Object.assign({}, {
+          taskId: task?._id?.toString(),
+          title: task?.title,
+          description: task?.description,
+          isCompleted: task?.isCompleted,
+          isDeleted: task?.isDeleted,
+          isEdited: task?.isEdited,
+          members: task?.members,
+        }))
+      }
+    })
+
+    const result = {
+      fullName: newAdmin?.fullName,
+      firstName: newAdmin?.firstName,
+      lastName: newAdmin?.lastName,
+      age: newAdmin?.age,
+      email: newAdmin?.email,
+      language: newAdmin?.language,
+      github: newAdmin?.github,
+      linkedIn: newAdmin?.linkedIn,
+      skills: newAdmin?.skills,
+      profilePhoto: newAdmin?.profilePhoto,
+      isAdmin: newAdmin?.isAdmin,
+      members: newAdmin?.members,
+      tasks: newTasks,
+      adminId: newAdmin?._id.toString(),
+    };
+
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // @desc - delete a task
 // @route - PUT '/'
 // @access - public
@@ -346,5 +403,6 @@ module.exports = {
   completeTask,
   editTask,
   revertTask,
-  deleteAllTasks
+  deleteAllTasks,
+  deleteCompletedTasks
 };
