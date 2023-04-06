@@ -13,6 +13,8 @@ import {
     Avatar,
     Divider,
     Chip,
+    Box,
+    Typography
 } from '@mui/material';
 
 export const Home = () => {
@@ -20,7 +22,7 @@ export const Home = () => {
     const members = useSelector(state => state.members)
     const [hasComplete, setHasComplete] = useState([])
     const [openAdd, setOpenAdd] = useState(false);
-    const [tasks, setTasks] = useState([])
+    const [tasks, setTasks] = useState([]);
     const [isReq, setIsReq] = useState(false);
     const [isError, setIsError] = useState(true);
     const { adminId } = members?.at(0);
@@ -43,6 +45,7 @@ export const Home = () => {
             .then(tasksArray => {
                 if (tasksArray?.status === 200) {
                     clearTimeout(clearTimeOut);
+                    setIsError(false);
                 }
 
                 const completedTasks = [];
@@ -53,8 +56,10 @@ export const Home = () => {
                     else normalTasks.push(taskArray)
                 })
 
-                setTasks(normalTasks.reverse())
-                setHasComplete(completedTasks.reverse())
+                setTasks(normalTasks?.reverse())
+                setHasComplete(completedTasks?.reverse())
+
+
             })
     }, [isReq])
 
@@ -90,6 +95,13 @@ export const Home = () => {
                         <TotalTasks total={tasks?.length + hasComplete?.length} />
                     </Stack>
 
+                    {!tasks?.length && !isError &&
+                        <Box sx={{ paddingTop: "3rem", textAlign: "center" }}>
+                            <Typography variant="h4">No Active tasks.</Typography>
+                            <Typography variant="subtitle2">Use Add or Revert.</Typography>
+                        </Box>
+                    }
+
                     <Tasks
                         edit
                         tasks={tasks}
@@ -106,10 +118,16 @@ export const Home = () => {
 
                             <DeleteTasks title="Completed Tasks" />
 
-                            <Tasks complete tasks={hasComplete} />
+                            <Tasks
+                                complete
+                                tasks={hasComplete}
+                                updateTasks={setTasks}
+                                isReq={setIsReq}
+                                errorMessage={handleErrorMessage}
+                                adminId={adminId} />
                         </>
                     }
-                    {(!tasks?.length || !hasComplete?.length) && <FailedMessage err={isError} />}
+                    {(!tasks?.length && !hasComplete?.length) && <FailedMessage err={isError} />}
 
                 </Stack>
             </Container>
