@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DeleteDialog } from "./DeleteDialog/DeleteDialog";
 import { EditDialog } from "./EditDialog/EditDialog";
-import { completeTasks } from "../../../API/API"
+import { completeTasks, revertTasks } from "../../../API/API"
 import {
     CssBaseline,
     Container,
@@ -28,28 +28,42 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
     const [editTask, setEditTask] = useState({})
     const [deleteTask, setDeleteTask] = useState({})
     const [completeTaskId, setCompleteTaskId] = useState(0);
+    const [revertTaskId, setRevertTaskId] = useState(0);
 
     function handleDeleteDialog(deleteTaskId) {
-        setOpenDelete(openDelete => !openDelete)
-        setDeleteTask({ adminId, deleteTaskId })
+        setOpenDelete(openDelete => !openDelete);
+        setDeleteTask({ adminId, deleteTaskId });
     }
 
     function handleEditDialog(editTasks) {
-        setOpenEdit(openEdit => !openEdit)
-        setEditTask(editTasks)
+        setOpenEdit(openEdit => !openEdit);
+        setEditTask(editTasks);
     }
 
     async function handleComplete(taskId) {
-        setLoading(true)
-        setCompleteTaskId(taskId)
+        setLoading(true);
+        setCompleteTaskId(taskId);
         const completedTasks = await completeTasks({ adminId, taskId });
 
         if (completedTasks?.status === 200) {
-            setLoading(false)
+            setLoading(false);
         }
 
         errorMessage();
-        isReq(req => !req)
+        isReq(req => !req);
+    }
+
+    async function handleRevert(taskId) {
+        setLoading(true);
+        setRevertTaskId(taskId);
+        const revertedTasks = await revertTasks({ adminId, taskId });
+
+        if (revertedTasks?.status === 200) {
+            setLoading(false);
+        }
+
+        errorMessage();
+        isReq(req => !req);
     }
 
     return (
@@ -142,12 +156,19 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
                                 </LoadingButton>
                             }
                             {complete &&
-                                <Button
+                                <LoadingButton
                                     key="revert"
-                                    sx={{ "&:hover": { background: "#ff9100", color: "#fff", border: "1px solid #ff9100" } }}
-                                    onClick={handleComplete}>
-                                    Revert
-                                </Button>}
+                                    size="small"
+                                    onClick={() => handleRevert(task?.taskId)}
+                                    loading={loading && revertTaskId === task?.taskId}
+                                    sx={{
+                                        "&:hover": { background: "#ff9100", color: "#fff", border: "1px solid #ff9100" },
+                                        "&:disabled": { border: "1px solid rgba(25, 118, 210, 0.5)" }
+                                    }}
+                                    variant="outlined"
+                                >
+                                    <span>Revert</span>
+                                </LoadingButton>}
                         </ButtonGroup>
                     </Stack>
                 )}
