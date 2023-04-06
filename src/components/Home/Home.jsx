@@ -90,17 +90,17 @@ export const Home = () => {
                     <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
                         <Stack direction="row">
                             <AddTasks isReq={setIsReq} openAdd={openAdd} handleAddDialog={handleAddDialog} />
-                            <DeleteTasks title="Tasks" />
+                            <DeleteTasks title="Tasks" adminId={adminId} isReq={setIsReq}/>
                         </Stack>
                         <TotalTasks total={tasks?.length + hasComplete?.length} />
                     </Stack>
 
-                    {!tasks?.length && !isError &&
+                    {/* {!tasks?.length && !isError &&
                         <Box sx={{ paddingTop: "3rem", textAlign: "center" }}>
                             <Typography variant="h4">No Active tasks.</Typography>
                             <Typography variant="subtitle2">Use Add or Revert.</Typography>
                         </Box>
-                    }
+                    } */}
 
                     <Tasks
                         edit
