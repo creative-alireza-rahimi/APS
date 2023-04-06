@@ -5,7 +5,9 @@ const {
   createTask,
   deleteTask,
   completeTask,
-  editTask
+  editTask,
+  revertTask,
+  deleteAllTasks
 } = require("../../controller/taskController");
 
 const {
@@ -39,6 +41,14 @@ router
 router
   .route("/tasks/completeTask")
   .put(completeTask);
+
+router
+  .route("/tasks/revertTask")
+  .put(revertTask);
+
+router
+  .route("/tasks/deleteAllTasks")
+  .put(deleteAllTasks);
 
 // Admin
 router
