@@ -86,9 +86,9 @@ export async function completeTasks({ adminId, taskId, userId }) {
     }
 }
 
-export async function revertTasks({ adminId, taskId }) {
+export async function revertTasks({ adminId, taskId, userId }) {
     try {
-        const response = await axios.put("http://localhost:5000/tasks/revertTask", { adminId, taskId });
+        const response = await axios.put("http://localhost:5000/tasks/revertTask", { adminId, taskId, userId });
         return response;
     } catch (error) {
         console.error(error);
