@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { DeleteDialog } from "./DeleteDialog/DeleteDialog";
 import { EditDialog } from "./EditDialog/EditDialog";
-import { completeTasks, revertTasks } from "../../../API/API"
+import { completeTasks, revertTasks } from "../../../API/API";
+import { readData } from "../../../Tools/localActions"
 import {
     CssBaseline,
     Container,
@@ -30,9 +31,12 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
     const [completeTaskId, setCompleteTaskId] = useState(0);
     const [revertTaskId, setRevertTaskId] = useState(0);
 
+    const user = readData("user");
+    const userId = user?.memberId ? user?.memberId : user?.adminId;
+
     function handleDeleteDialog(deleteTaskId) {
         setOpenDelete(openDelete => !openDelete);
-        setDeleteTask({ adminId, deleteTaskId });
+        setDeleteTask({ adminId, deleteTaskId, userId });
     }
 
     function handleEditDialog(editTasks) {
@@ -130,7 +134,7 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
                             aria-label="vertical outlined button group"
                             sx={{ margin: `${isHorizonal ? "0.6rem auto 0" : "0"}`, minWidth: 120 }}
                         >
-                            {edit && <Button
+                            {edit && user?.isAdmin && <Button
                                 key="edit"
                                 sx={{ "&:hover": { background: "#0288d1", color: "#fff", border: "1px solid #0288d1" } }}
                                 onClick={() => handleEditDialog(task)}>
