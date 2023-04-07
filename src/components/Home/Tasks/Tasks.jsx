@@ -47,7 +47,7 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
     async function handleComplete(taskId) {
         setLoading(true);
         setCompleteTaskId(taskId);
-        const completedTasks = await completeTasks({ adminId, taskId });
+        const completedTasks = await completeTasks({ adminId, taskId, userId });
 
         if (completedTasks?.status === 200) {
             setLoading(false);
