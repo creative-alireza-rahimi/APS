@@ -27,7 +27,7 @@ export const ProfileNav = () => {
     const open = Boolean(anchorEl);
 
     const adminProfile = useSelector((state) => state.members)
-    console.log(adminProfile);
+
     useEffect(() => {
         setAdminArray(adminProfile[0]);
     }, [adminProfile])

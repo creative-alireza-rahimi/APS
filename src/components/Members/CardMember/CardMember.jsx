@@ -23,7 +23,7 @@ import {
 export const CardMember = ({ members }) => {
   const [openTasksDialog, setOpenTasksDialog] = useState(false);
   const [tasks, setTasks] = useState([]);
-  console.log(members[0]?.members);
+
   function handleTasksDialog(tasks) {
     setTasks(tasks)
     setOpenTasksDialog(openTasksDialog => !openTasksDialog)

@@ -5,7 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 
 export const TasksList = React.memo(
     ({ tasks }) => {
-        console.log(tasks);
+
         return (
             <List sx={{ maxHeight: 300 }}>
                 {tasks.map((task, i) => (<ListItem>

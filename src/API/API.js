@@ -23,7 +23,6 @@ export async function newAdmin(admin) {
 
 export async function newMembers(member) {
     try {
-        console.log(member);
         const response = await axios.put("https://todzilla-backend.onrender.com/admin/newMember", member);
         return response;
     } catch (error) {

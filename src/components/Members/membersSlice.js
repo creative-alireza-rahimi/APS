@@ -13,7 +13,8 @@ const membersSliceState = [{
     profilePhoto: "",
     members: [],
     adminId: "",
-    isAdmin: false
+    isAdmin: false,
+    tasks: []
 }]
 
 export const membersSlice = createSlice({
@@ -21,14 +22,12 @@ export const membersSlice = createSlice({
     initialState: membersSliceState,
     reducers: {
         getMember: (state, action) => {
-            console.log(action);
             return [action.payload];
         },
         resetMember: (state) => {
             return membersSliceState;
         },
         newMember: (state, action) => {
-            console.log(action);
             return [action.payload];
         }
     },

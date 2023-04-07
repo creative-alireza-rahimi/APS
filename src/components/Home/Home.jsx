@@ -16,14 +16,12 @@ import {
     Avatar,
     Divider,
     Chip,
-    Box,
-    Typography
 } from '@mui/material';
 
 export const Home = () => {
     const members = useSelector(state => state.members)
 
-    const [localUser, setLocalUser] = useState(readData("user"));
+    const [localUser, _] = useState(readData("user"));
     const [hasComplete, setHasComplete] = useState([])
     const [openAdd, setOpenAdd] = useState(false);
     const [tasks, setTasks] = useState([]);
@@ -79,7 +77,7 @@ export const Home = () => {
                 })
 
     }, [isReq])
-    console.log("localUser", localUser);
+
     return (
         <>
             <CssBaseline />

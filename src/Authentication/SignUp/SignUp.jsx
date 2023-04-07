@@ -63,7 +63,6 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
             members: [],
             isAdmin: true
         })
-        console.log("admin: ", admin);
 
         if (admin.status === 200) {
             dispatch(isAuth())
