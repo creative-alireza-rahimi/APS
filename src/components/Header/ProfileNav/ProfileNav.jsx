@@ -4,7 +4,7 @@ import Logout from '@mui/icons-material/Logout';
 import { useSelector, useDispatch } from 'react-redux';
 import { logOut } from '../../../Authentication/authSlice'
 import { resetMember } from '../../Members/MembersSlice';
-import { removeData } from "../../../Tools/saveToLocal";
+import { removeData } from "../../../Tools/localActions";
 import {
     IconButton,
     Typography,

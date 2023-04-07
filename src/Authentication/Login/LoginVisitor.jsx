@@ -4,7 +4,7 @@ import { getVisitor } from "../../API/API";
 import { useDispatch } from 'react-redux';
 import { isAuth } from '../authSlice';
 import { getMember } from '../../components/Members/MembersSlice';
-import { saveData } from '../../Tools/saveToLocal';
+import { saveData } from '../../Tools/localActions';
 import {
     Button,
     Dialog,
