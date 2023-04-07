@@ -6,6 +6,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import {
     Box,
     Table,
@@ -186,13 +187,14 @@ export const ListOfModifications = () => {
                                                 id={labelId}
                                                 scope="row"
                                                 align="center"
-                                                padding="2rem 0"
+                                                padding="2rem"
                                             >
                                                 {
                                                     modification?.type.includes('delete') ?
                                                         <HighlightOffIcon color="error" /> : modification?.type === 'edit' ?
                                                             <EditIcon color="primary" /> : modification?.type === "complete" ?
-                                                                <CheckCircleOutlineIcon color="warning" /> : <AddCircleOutlineIcon color="primary" />
+                                                                <CheckCircleOutlineIcon color="warning" /> : modification?.type === "revert" ?
+                                                                    <SettingsBackupRestoreIcon /> : <AddCircleOutlineIcon color="primary" />
                                                 }
                                             </TableCell>
                                             <TableCell align="left">{modification?.members[0]?.fullName}</TableCell>
