@@ -1,4 +1,4 @@
-const Task = require("../model/Tasks");
+const History = require("../model/Histories");
 const Admin = require("../model/Admins");
 
 // @desc - all tasks
@@ -42,8 +42,25 @@ const createTask = async (req, res) => {
   if (!adminId)
     return res.status(400).json({ message: "adminId is required" });
 
+
+
   try {
     const admin = await Admin.findOne({ _id: adminId });
+
+    const historyObj = new History(
+      {
+        title: req?.body?.title,
+        type: "create",
+        date: new Date().toLocaleString(),
+        members: [{
+          fullName: admin?.fullName,
+          age: admin?.age,
+          email: admin?.email,
+        }]
+      }
+    );
+    
+    await historyObj.save();
 
     admin?.tasks?.push(req?.body);
 
