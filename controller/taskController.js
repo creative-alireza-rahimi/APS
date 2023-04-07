@@ -241,13 +241,31 @@ const completeTask = async (req, res) => {
 // @route - PUT '/tasks/revertTask'
 // @access - public
 const revertTask = async (req, res) => {
-  const { adminId, taskId } = req?.body;
+  const { adminId, taskId, userId } = req?.body;
   if (!adminId || !taskId) return res.status(400).json({ message: "adminId and taskId are both required" });
 
   try {
     const admin = await Admin.findOne({ _id: adminId });
     if (!admin)
       return res.status(204).json({ message: `no matches admin with id:${adminId}` });
+
+    const history = [];
+    admin?.tasks?.map(task => {
+      if (task?._id?.toString() === taskId) {
+        history.push({
+          title: task?.title,
+          type: 'revert',
+          date: new Date().toLocaleString(),
+          members: task?.members?.filter(member => member?.memberId === userId),
+        })
+      }
+    })
+
+    const historyObj = new History(
+      history[0]
+    );
+
+    await historyObj.save();
 
     admin?.tasks
       ?.forEach(task => {
@@ -297,13 +315,25 @@ const revertTask = async (req, res) => {
 // @route - PUT '/tasks/deleteAllTasks'
 // @access - public
 const deleteAllTasks = async (req, res) => {
-  const { adminId } = req?.body;
+  const { adminId, userId } = req?.body;
+  console.log(userId);
   if (!adminId) return res.status(400).json({ message: "adminId is required" });
 
   try {
     const admin = await Admin.findOne({ _id: adminId });
     if (!admin)
       return res.status(204).json({ message: `no matches admin with id:${adminId}` });
+
+    const historyObj = new History(
+      {
+        title: 'All Tasks',
+        type: 'deleteAll',
+        date: new Date().toLocaleString(),
+        members: admin?.members?.filter(member => member?.memberId === userId),
+      }
+    );
+
+    await historyObj.save();
 
     admin?.tasks
       ?.forEach(task => {
