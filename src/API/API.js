@@ -112,3 +112,12 @@ export async function deleteCompletedTasks({ adminId }) {
         console.error(error);
     }
 }
+
+export async function getVisitor({ username }) {
+    try {
+        const response = await axios.get("http://localhost:5000/login/getVisitor", { params: { username } });
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}
