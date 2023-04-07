@@ -95,9 +95,9 @@ export async function revertTasks({ adminId, taskId, userId }) {
     }
 }
 
-export async function deleteAllTasks({ adminId }) {
+export async function deleteAllTasks({ adminId, userId }) {
     try {
-        const response = await axios.put("http://localhost:5000/tasks/deleteAllTasks", { adminId });
+        const response = await axios.put("http://localhost:5000/tasks/deleteAllTasks", { adminId, userId });
         return response;
     } catch (error) {
         console.error(error);
