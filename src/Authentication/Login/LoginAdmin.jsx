@@ -7,6 +7,7 @@ import { getAdmin } from "../../API/API";
 import { useDispatch } from 'react-redux';
 import { isAuth } from '../authSlice';
 import { getMember } from '../../components/Members/MembersSlice';
+import { saveData } from '../../Tools/saveToLocal';
 import {
     Button,
     Dialog,
@@ -34,11 +35,12 @@ export const LoginAdmin = ({ openForm, OpenLogin, AuthDialog }) => {
             password,
             email,
         })
-    
+
         if (admin.status === 200) {
             dispatch(isAuth())
             setIsLoading(false)
 
+            saveData("user", admin.data)
             dispatch(getMember(admin.data))
         }
     }
@@ -92,7 +94,7 @@ export const LoginAdmin = ({ openForm, OpenLogin, AuthDialog }) => {
                 </Button>
                 <Button onClick={() => {
                     handleLoginAdmin();
-                    }}>
+                }}>
                     Login
                 </Button>
             </DialogActions>
