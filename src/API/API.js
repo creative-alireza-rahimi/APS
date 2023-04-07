@@ -68,9 +68,9 @@ export async function editTasks(task) {
     }
 }
 
-export async function deleteTasks({ adminId, deleteTaskId: taskId }) {
+export async function deleteTasks({ adminId, deleteTaskId: taskId, userId }) {
     try {
-        const response = await axios.put("http://localhost:5000/tasks/deleteTask", { adminId, taskId });
+        const response = await axios.put("http://localhost:5000/tasks/deleteTask", { adminId, taskId, userId });
         return response;
     } catch (error) {
         console.error(error);
