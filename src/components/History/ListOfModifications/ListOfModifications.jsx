@@ -4,8 +4,8 @@ import { getHistory } from "../../../API/API";
 import PropTypes from 'prop-types';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import EditIcon from '@mui/icons-material/Edit';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import {
     Box,
@@ -187,14 +187,14 @@ export const ListOfModifications = () => {
                                                 id={labelId}
                                                 scope="row"
                                                 align="center"
-                                                padding="2rem"
+                                                padding="checkbox"
                                             >
                                                 {
                                                     modification?.type.includes('delete') ?
                                                         <HighlightOffIcon color="error" /> : modification?.type === 'edit' ?
-                                                            <EditIcon color="primary" /> : modification?.type === "complete" ?
-                                                                <CheckCircleOutlineIcon color="warning" /> : modification?.type === "revert" ?
-                                                                    <SettingsBackupRestoreIcon /> : <AddCircleOutlineIcon color="primary" />
+                                                            <PublishedWithChangesIcon color="primary" /> : modification?.type === "complete" ?
+                                                                <CheckCircleOutlineIcon color="success" /> : modification?.type === "revert" ?
+                                                                    <SettingsBackupRestoreIcon color="warning"/> : <AddCircleOutlineIcon color="primary" />
                                                 }
                                             </TableCell>
                                             <TableCell align="left">{modification?.members[0]?.fullName}</TableCell>
