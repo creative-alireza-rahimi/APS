@@ -4,7 +4,7 @@ import Logout from '@mui/icons-material/Logout';
 import { useSelector, useDispatch } from 'react-redux';
 import { logOut } from '../../../Authentication/authSlice'
 import { resetMember } from '../../Members/MembersSlice';
-import { removeData } from "../../../Tools/localActions";
+import { removeData, readData } from "../../../Tools/localActions";
 import {
     IconButton,
     Typography,
@@ -15,11 +15,12 @@ import {
     ListItemIcon,
     Divider,
 } from '@mui/material';
-import { NavLink } from "react-router-dom";
 
 export const ProfileNav = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [adminArray, setAdminArray] = useState({});
+
+    const user = readData("user");
 
     const dispatch = useDispatch();
 
@@ -101,12 +102,16 @@ export const ProfileNav = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem>
-                    <Avatar src={adminArray?.profilePhoto} />
-                    Profile
-                </MenuItem>
+                {user?.isAdmin &&
+                    <>
+                        <MenuItem>
+                            <Avatar src={adminArray?.profilePhoto} />
+                            Profile
+                        </MenuItem>
 
-                <Divider />
+                        <Divider />
+                    </>
+                }
 
                 <MenuItem
                     // containerElement={<Link to="/" />}
