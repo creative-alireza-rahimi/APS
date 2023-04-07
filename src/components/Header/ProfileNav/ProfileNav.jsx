@@ -3,8 +3,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import Logout from '@mui/icons-material/Logout';
 import { useSelector, useDispatch } from 'react-redux';
 import { logOut } from '../../../Authentication/authSlice'
-import { resetMember } from '../../Members/membersSlice';
-import { Link } from 'react-router-dom';
+import { resetMember } from '../../Members/MembersSlice';
+import { removeData } from "../../../Tools/saveToLocal";
 import {
     IconButton,
     Typography,
@@ -28,7 +28,7 @@ export const ProfileNav = () => {
     const adminProfile = useSelector((state) => state.members)
     console.log(adminProfile);
     useEffect(() => {
-        setAdminArray(adminProfile?.filter(select => select.isAdmin));
+        setAdminArray(adminProfile[0]);
     }, [adminProfile])
 
     const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -41,7 +41,7 @@ export const ProfileNav = () => {
         <>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
                 <Typography variant="caption" display="block" sx={{ marginTop: "0.5rem" }}>
-                    {adminArray[0]?.firstName}
+                    {adminArray?.firstName}
                 </Typography>
 
                 <IconButton
@@ -102,7 +102,7 @@ export const ProfileNav = () => {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 <MenuItem>
-                    <Avatar src={adminProfile[0]?.profilePhoto} />
+                    <Avatar src={adminArray?.profilePhoto} />
                     Profile
                 </MenuItem>
 
@@ -115,6 +115,7 @@ export const ProfileNav = () => {
                         handleClose();
                         dispatch(logOut());
                         dispatch(resetMember())
+                        removeData("user")
                     }}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
