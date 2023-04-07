@@ -77,9 +77,9 @@ export async function deleteTasks({ adminId, deleteTaskId: taskId, userId }) {
     }
 }
 
-export async function completeTasks({ adminId, taskId }) {
+export async function completeTasks({ adminId, taskId, userId }) {
     try {
-        const response = await axios.put("http://localhost:5000/tasks/completeTask", { adminId, taskId });
+        const response = await axios.put("http://localhost:5000/tasks/completeTask", { adminId, taskId, userId });
         return response;
     } catch (error) {
         console.error(error);
