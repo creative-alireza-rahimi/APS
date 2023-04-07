@@ -4,9 +4,11 @@ import { DeleteTasks } from "./Tasks/DeleteTasks";
 import { DeleteCompletedTasks } from "./Tasks/DeleteCompletedTasks";
 import { AddTasks } from "./Tasks/AddTasks/AddTasks";
 import { TotalTasks } from "./Tasks/TotalTasks";
+import { getUserName } from "../../Tools/getUserName";
 import { useSelector } from 'react-redux';
-import { getTasks } from "../../API/API";
+import { getTasks, getVisitor } from "../../API/API";
 import { FailedMessage } from "./FailedMessage";
+import { readData } from '../../Tools/saveToLocal';
 import {
     CssBaseline,
     Container,
@@ -19,8 +21,9 @@ import {
 } from '@mui/material';
 
 export const Home = () => {
-    let clearTimeOut;
     const members = useSelector(state => state.members)
+
+    const [localUser, setLocalUser] = useState(readData("user"));
     const [hasComplete, setHasComplete] = useState([])
     const [openAdd, setOpenAdd] = useState(false);
     const [tasks, setTasks] = useState([]);
@@ -39,26 +42,44 @@ export const Home = () => {
     useEffect(() => {
         setTasks([]);
         setHasComplete([]);
+        localUser?.isAdmin ?
+            getTasks({ adminId })
+                .then(tasksArray => {
+                    setIsError(false);
 
-        getTasks({ adminId })
-            .then(tasksArray => {
-                setIsError(false);
+                    const completedTasks = [];
+                    const normalTasks = [];
 
-                const completedTasks = [];
-                const normalTasks = [];
+                    tasksArray?.data?.map(taskArray => {
+                        if (taskArray?.isCompleted) completedTasks.push(taskArray);
+                        else normalTasks.push(taskArray)
+                    })
 
-                tasksArray?.data?.map(taskArray => {
-                    if (taskArray?.isCompleted) completedTasks.push(taskArray);
-                    else normalTasks.push(taskArray)
+                    setTasks(normalTasks?.reverse())
+                    setHasComplete(completedTasks?.reverse())
+
+
+                }) : getVisitor({
+                    username:
+                        getUserName(localUser?.github) &&
+                        getUserName(localUser?.linkedIn)
+                }).then(visitorObj => {
+                    setIsError(false);
+
+                    const completedTasks = [];
+                    const normalTasks = [];
+
+                    visitorObj?.data?.tasks?.map(visitor => {
+                        if (visitor?.isCompleted) completedTasks.push(visitor);
+                        else normalTasks.push(visitor)
+                    })
+
+                    setTasks(normalTasks?.reverse())
+                    setHasComplete(completedTasks?.reverse())
                 })
 
-                setTasks(normalTasks?.reverse())
-                setHasComplete(completedTasks?.reverse())
-
-
-            })
     }, [isReq])
-
+    console.log("localUser", localUser);
     return (
         <>
             <CssBaseline />
@@ -85,7 +106,7 @@ export const Home = () => {
 
                     <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
                         <Stack direction="row">
-                            <AddTasks isReq={setIsReq} openAdd={openAdd} handleAddDialog={handleAddDialog} errorMessage={handleErrorMessage} />
+                            {localUser?.isAdmin && <AddTasks isReq={setIsReq} openAdd={openAdd} handleAddDialog={handleAddDialog} errorMessage={handleErrorMessage} />}
                             <DeleteTasks title="Tasks" adminId={adminId} isReq={setIsReq} />
                         </Stack>
                         <TotalTasks total={tasks?.length + hasComplete?.length} />
@@ -112,7 +133,7 @@ export const Home = () => {
                                 <Chip label="COMPLETED TASKS" />
                             </Divider>
 
-                            <DeleteCompletedTasks title="Completed Tasks" adminId={adminId} isReq={setIsReq} errorMessage={handleErrorMessage}/>
+                            <DeleteCompletedTasks title="Completed Tasks" adminId={adminId} isReq={setIsReq} errorMessage={handleErrorMessage} />
 
                             <Tasks
                                 complete
