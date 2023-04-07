@@ -60,7 +60,7 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
     async function handleRevert(taskId) {
         setLoading(true);
         setRevertTaskId(taskId);
-        const revertedTasks = await revertTasks({ adminId, taskId });
+        const revertedTasks = await revertTasks({ adminId, taskId, userId });
 
         if (revertedTasks?.status === 200) {
             setLoading(false);
