@@ -121,3 +121,12 @@ export async function getVisitor({ username }) {
         console.error(error);
     }
 }
+
+export async function getHistory() {
+    try {
+        const response = await axios.get("http://localhost:5000/history/getHistory");
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}
