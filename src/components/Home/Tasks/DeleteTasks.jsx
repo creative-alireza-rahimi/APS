@@ -12,10 +12,14 @@ import {
 } from '@mui/material';
 import { deleteAllTasks } from "../../../API/API";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { readData } from "../../../Tools/localActions";
 
 export const DeleteTasks = ({ title, adminId, isReq }) => {
   const [openDelete, setOpenDelete] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const user = readData("user");
+  const userId = user?.memberId ? user?.memberId : user?.adminId;
 
   async function handleDeleteDialog() {
     setOpenDelete(openDelete => !openDelete);
@@ -24,7 +28,7 @@ export const DeleteTasks = ({ title, adminId, isReq }) => {
   async function handleDeleteAll() {
     setIsLoading(true)
 
-    const deleteTasks = await deleteAllTasks({ adminId });
+    const deleteTasks = await deleteAllTasks({ adminId, userId });
 
     if (deleteTasks?.status === 200) {
       handleDeleteDialog();
