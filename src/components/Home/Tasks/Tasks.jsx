@@ -72,6 +72,7 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
             <Container sx={{ padding: "0 !important" }}>
                 {tasks && tasks.map((task, index) =>
                     <Stack
+                        key={task?.taskId}
                         direction="row"
                         justifyContent="space-between"
                         alignItems="center"
@@ -113,7 +114,7 @@ export const Tasks = ({ complete, edit, tasks, updateTasks, isReq, errorMessage,
                                         ?.sort((a, b) => Number(b.isAdmin) - Number(a.isAdmin))
                                         ?.map(member =>
                                             <Avatar
-                                                key={member?.memeberId}
+                                                key={member?.memberId}
                                                 alt={member?.fullName}
                                                 src={member?.profilePhoto}
                                             />
