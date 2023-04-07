@@ -316,7 +316,7 @@ const revertTask = async (req, res) => {
 // @access - public
 const deleteAllTasks = async (req, res) => {
   const { adminId, userId } = req?.body;
-  console.log(userId);
+
   if (!adminId) return res.status(400).json({ message: "adminId is required" });
 
   try {
@@ -368,13 +368,24 @@ const deleteAllTasks = async (req, res) => {
 // @route - PUT '/tasks/deleteAllTasks'
 // @access - public
 const deleteCompletedTasks = async (req, res) => {
-  const { adminId } = req?.body;
+  const { adminId, userId } = req?.body;
   if (!adminId) return res.status(400).json({ message: "adminId is required" });
 
   try {
     const admin = await Admin.findOne({ _id: adminId });
     if (!admin)
       return res.status(204).json({ message: `no matches admin with id:${adminId}` });
+
+      const historyObj = new History(
+        {
+          title: 'All Completed Tasks',
+          type: 'deleteAllCompleted',
+          date: new Date().toLocaleString(),
+          members: admin?.members?.filter(member => member?.memberId === userId),
+        }
+      );
+  
+      await historyObj.save();
 
     admin?.tasks
       ?.forEach(task => {
