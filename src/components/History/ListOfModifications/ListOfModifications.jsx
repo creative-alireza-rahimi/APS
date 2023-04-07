@@ -189,7 +189,7 @@ export const ListOfModifications = () => {
                                                 padding="2rem 0"
                                             >
                                                 {
-                                                    modification?.type === 'delete' ?
+                                                    modification?.type.includes('delete') ?
                                                         <HighlightOffIcon color="error" /> : modification?.type === 'edit' ?
                                                             <EditIcon color="primary" /> : modification?.type === "complete" ?
                                                                 <CheckCircleOutlineIcon color="warning" /> : <AddCircleOutlineIcon color="primary" />
