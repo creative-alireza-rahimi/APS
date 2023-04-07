@@ -17,10 +17,20 @@ const {
   updateAdmin,
   deleteAdmin,
   newMember,
-  getAdmin
+  getAdmin,
+  getVisitor
 } = require("../../controller/adminController");
 
+const {
+  getHistory,
+} = require("../../controller/historyController");
+
 const router = express.Router();
+
+// History
+router
+  .route("/history/getHistory")
+  .get(getHistory)
 
 // Task
 router
@@ -73,6 +83,10 @@ router
 router
   .route("/login/getAdmin")
   .post(getAdmin)
+
+router
+  .route("/login/getVisitor")
+  .get(getVisitor)
 
 
 module.exports = router;
