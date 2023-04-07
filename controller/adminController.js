@@ -49,6 +49,93 @@ const getAdmin = async (req, res) => {
   }
 };
 
+// @desc - get visitor
+// @route - GET '/login/getVisitor'
+// @access - public
+const getVisitor = async (req, res) => {
+  const { username } = req?.query;
+
+  try {
+    const searchedVisitor = await Admin.find({
+      members: {
+        $elemMatch: {
+          $or: [{
+            linkedIn: `https://www.linkedin.com/in/${username}`,
+
+          }, {
+            github: `https://github.com/${username}`
+          }
+          ]
+        }
+      }
+    }, { "members.$": 1 });
+
+    const searchedAdmin = await Admin.find({
+      members: {
+        $elemMatch: {
+          $or: [{
+            linkedIn: `https://www.linkedin.com/in/${username}`,
+
+          }, {
+            github: `https://github.com/${username}`
+          }
+          ]
+        }
+      }
+    });
+
+    const adminId = searchedAdmin?.at(0)?._id?.toString();
+    const visitor = searchedVisitor?.at(0)?.members?.at(0)
+
+    if (!visitor) return res.status(204).json({ message: "No visitor found" });
+    if (!adminId) return res.status(204).json({ message: "No admin found" });
+
+    const admin = await Admin.findOne({ _id: adminId });
+
+    const memberTask=[];
+    admin?.tasks.filter(task => {
+      if (task?.members?.filter(member => member?.memberId === visitor.memberId).length)
+        memberTask.push(task);
+    })
+    
+    const newTasks = [];
+    memberTask?.map(task => {
+      if (!task?.isDeleted) {
+        newTasks.push(Object.assign({}, {
+          taskId: task?._id?.toString(),
+          title: task?.title,
+          description: task?.description,
+          isCompleted: task?.isCompleted,
+          isDeleted: task?.isDeleted,
+          isEdited: task?.isEdited,
+          members: task?.members,
+        }))
+      }
+    })
+
+    const result = {
+      fullName: visitor?.fullName,
+      firstName: visitor?.firstName,
+      lastName: visitor?.lastName,
+      age: visitor?.age,
+      language: visitor?.language,
+      github: visitor?.github,
+      linkedIn: visitor?.linkedIn,
+      skills: visitor?.skills,
+      profilePhoto: visitor?.profilePhoto,
+      isAdmin: visitor?.isAdmin,
+      members: admin?.members,
+      memberId:visitor?.memberId,
+      tasks: newTasks,
+      adminId,
+    };
+
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // @desc - create a admin
 // @route - POST '/admins'
 // @access - public
@@ -63,8 +150,8 @@ const createAdmin = async (req, res) => {
       age: admin?.age,
       email: admin?.email,
       language: admin?.language,
-      github: admin?.github,
-      linkedIn: admin?.linkedIn,
+      github: `https://github.com/${admin?.github}`,
+      linkedIn: `https://www.linkedin.com/in/${admin?.linkedIn}`,
       skills: admin?.skills,
       profilePhoto: admin?.profilePhoto,
       isAdmin: admin?.isAdmin,
@@ -192,8 +279,8 @@ const newMember = async (req, res) => {
       age: saveMember?.age,
       email: saveMember?.email,
       language: saveMember?.language,
-      github: saveMember?.github,
-      linkedIn: saveMember?.linkedIn,
+      github: `https://github.com/${saveMember?.github}`,
+      linkedIn: `https://www.linkedin.com/in/${saveMember?.linkedIn}`,
       skills: saveMember?.skills,
       profilePhoto: saveMember?.profilePhoto,
       isAdmin: saveMember?.isAdmin,
@@ -214,5 +301,6 @@ module.exports = {
   updateAdmin,
   deleteAdmin,
   newMember,
-  getAdmin
+  getAdmin,
+  getVisitor
 };
