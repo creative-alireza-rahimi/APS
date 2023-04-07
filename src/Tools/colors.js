@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles';
+import { purple } from '@mui/material/colors';
 
 const { augmentColor } = createTheme().palette;
 const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
@@ -13,10 +14,13 @@ export const themes = createTheme({
     },
     secondary: {
       light: '#ff7961',
-      main: '#f44336',
+      main:  purple[500],
       dark: '#ba000d',
       contrastText: '#000',
     },
     lightBtn: createColor('#fff'),
+    Tabs: {
+      dark: "#121212"
+    }
   },
 });
