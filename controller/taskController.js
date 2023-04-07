@@ -59,7 +59,7 @@ const createTask = async (req, res) => {
         }]
       }
     );
-    
+
     await historyObj.save();
 
     admin?.tasks?.push(req?.body);
@@ -98,6 +98,21 @@ const editTask = async (req, res) => {
     if (!admin)
       return res.status(204).json({ message: `No matches admin with id:${editedTask?.adminId}` });
 
+    const historyObj = new History(
+      {
+        title: req?.body?.title,
+        type: "edit",
+        date: new Date().toLocaleString(),
+        members: [{
+          fullName: admin?.fullName,
+          age: admin?.age,
+          email: admin?.email,
+        }]
+      }
+    );
+
+    await historyObj.save();
+
     admin?.tasks
       ?.forEach(oldTask => {
         if (oldTask?._id?.toString() === editedTask?.taskId) {
@@ -107,6 +122,7 @@ const editTask = async (req, res) => {
           oldTask.members = editedTask?.members;
         }
       })
+      
     const savedAdmin = await admin.save();
 
     const newTasks = [];
