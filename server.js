@@ -7,7 +7,8 @@ const mongoose = require("mongoose");
 const app = express();
 
 app.use(express.json({ limit: "30mb", extended: true }));
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:3000' }));
+// app.use(cors());
 
 app.use("/", routes);
 app.use("/admin", routes);
