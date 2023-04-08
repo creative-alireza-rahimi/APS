@@ -35,7 +35,7 @@ router
 // Task
 router
   .route("/tasks/getTasks")
-  .get(getTasks)
+  .post(getTasks)
 
 router
   .route("/tasks/newTask")
@@ -86,7 +86,7 @@ router
 
 router
   .route("/login/getVisitor")
-  .get(getVisitor)
+  .post(getVisitor)
 
 
 module.exports = router;

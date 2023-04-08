@@ -5,7 +5,7 @@ const Admin = require("../model/Admins");
 // @route - GET '/'
 // @access - public
 const getTasks = async (req, res) => {
-  const { adminId } = req?.query;
+  const { adminId } = req?.body;
 
   try {
     const admin = await Admin.findOne({ _id: adminId });

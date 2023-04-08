@@ -53,7 +53,7 @@ const getAdmin = async (req, res) => {
 // @route - GET '/login/getVisitor'
 // @access - public
 const getVisitor = async (req, res) => {
-  const { username } = req?.query;
+  const { username } = req?.body;
 
   try {
     const searchedVisitor = await Admin.find({
@@ -168,7 +168,8 @@ const createAdmin = async (req, res) => {
         profilePhoto: admin?.profilePhoto,
         isAdmin: admin?.isAdmin,
         memberId: randomId()
-      }]
+      }],
+      tasks: [],
     }
   );
 
