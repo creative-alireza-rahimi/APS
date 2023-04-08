@@ -13,9 +13,5 @@
     "mongoose": "^7.0.1",
     "uuid": "^9.0.0"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build"
-  },
   "devDependencies": {}
 }
