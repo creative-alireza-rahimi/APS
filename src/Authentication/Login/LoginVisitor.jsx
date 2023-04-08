@@ -29,12 +29,12 @@ export const LoginVisitor = ({ openForm, OpenLogin, AuthDialog }) => {
 
         const visitor = await getVisitor({ username })
 
-        if (visitor.status === 200) {
+        if (visitor?.status === 200) {
             dispatch(isAuth())
             setIsLoading(false)
 
-            saveData("user", visitor.data)
-            dispatch(getMember(visitor.data))
+            saveData("user", visitor?.data)
+            dispatch(getMember(visitor?.data))
         }
     }
 

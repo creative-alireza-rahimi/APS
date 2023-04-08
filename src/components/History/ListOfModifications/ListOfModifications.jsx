@@ -171,7 +171,7 @@ export const ListOfModifications = () => {
                         />
                         <TableBody>
 
-                            {modifications.slice().sort(getComparator(order, orderBy))
+                            {modifications?.slice().sort(getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((modification, index) => {
                                     const labelId = `enhanced-table-checkbox-${index}`;
