@@ -8,6 +8,8 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import TranslateIcon from '@mui/icons-material/Translate';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import Link from '@mui/material/Link';
+import { readData } from '../../../Tools/localActions';
 import {
   Stack,
   Card,
@@ -28,6 +30,9 @@ export const CardMember = ({ members }) => {
     setTasks(tasks)
     setOpenTasksDialog(openTasksDialog => !openTasksDialog)
   }
+
+  const user = readData("user");
+  const userTasks = user?.tasks?.filter(task => !task?.isDeleted);
 
   return (
     <Stack
@@ -61,18 +66,21 @@ export const CardMember = ({ members }) => {
             <Stack direction="row" justifyContent="flex-start" gap={3}>
               <Stack direction="row" justifyContent="flex-start">
                 <Tooltip title="LinkedIn">
-                  <LinkedInIcon
-                    fontSize="large"
-                    color="primary"
-                    sx={{ marginRight: "1rem", cursor: 'pointer' }}
-                    onClick={() => console.log("linkedIn")} />
+                  <Link href={member?.linkedIn} underline="none" target="_blank" rel="noreferrer">
+                    <LinkedInIcon
+                      fontSize="large"
+                      color="primary"
+                      sx={{ marginRight: "1rem", cursor: 'pointer' }} />
+                  </Link>
                 </Tooltip>
 
                 <Tooltip title="Github">
-                  <GitHubIcon
-                    fontSize="large"
-                    sx={{ cursor: 'pointer' }}
-                    onClick={() => console.log("github")} />
+                  <Link href={member?.github} underline="none" target="_blank" rel="noreferrer">
+                    <GitHubIcon
+                      fontSize="large"
+                      sx={{ cursor: 'pointers', color: "rgba(0, 0, 0, 0.8)" }}
+                    />
+                  </Link>
                 </Tooltip>
               </Stack>
 
@@ -108,15 +116,19 @@ export const CardMember = ({ members }) => {
 
             <Stack direction="row" flexWrap="wrap" alignItems="center" sx={{ marginTop: '1rem' }}>
               <Tooltip title="Tasks">
-                <AssignmentOutlinedIcon fontSize="large" color="primary" />
+                <AssignmentOutlinedIcon fontSize="large" color="primary" sx={{ marginRight: '0.8rem' }} />
               </Tooltip>
 
-              {member?.tasks?.map((task, i) => (
-                i < 3 &&
-                <Chip key={i} label={task?.title} size="small" color={task?.isCompleted ? "success" : "error"} sx={{ margin: "0.2rem ", width: "fit-content" }} />
+              {userTasks?.map((task, i) => (
+                i < 3 && task?.members?.some(taskMember => taskMember?.memberId === member?.memberId) &&
+                <Chip key={i} label={task?.title} size="small" color={task?.isCompleted ? "success" : "error"} sx={{ borderRadius: "1px", margin: "0.2rem", width: "fit-content" }} />
               ))}
-              {member?.tasks?.length > 3 && <Chip label={<MoreHorizIcon sx={{ paddingTop: "0.4rem" }} />} sx={{ height: "1.6rem" }} onClick={() => handleTasksDialog(member.tasks)} />}
-              {openTasksDialog && <TasksDialog open={openTasksDialog} handleTasksDialog={handleTasksDialog} tasks={tasks} />}
+              
+              {userTasks?.map((task, i) => (
+                task?.members?.map(taskMember => taskMember?.memberId === member?.memberId).length > 3 &&
+                <Chip label={<MoreHorizIcon sx={{ paddingTop: "0.4rem" }} />} sx={{ height: "1.6rem" }} onClick={() => handleTasksDialog(userTasks)} />
+              ))}
+              {openTasksDialog && <TasksDialog open={openTasksDialog} handleTasksDialog={handleTasksDialog} tasks={userTasks} />}
             </Stack>
           </CardContent>
         </Card>))}
