@@ -35,7 +35,7 @@ export const Authentication = ({ isAuth, Auth }) => {
                 disableEscapeKeyDown
 
             >
-                <DialogTitle>Welcome Jigar</DialogTitle>
+                <DialogTitle>Welcome</DialogTitle>
                 <DialogContent sx={{ minWidth: 350 }}>
                     <DialogContentText id="alert-dialog-slide-description">
                         Login
