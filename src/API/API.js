@@ -51,7 +51,7 @@ export async function newTask(task) {
 
 export async function getTasks({ adminId }) {
     try {
-        const response = await axios.get("https://todzilla-backend.onrender.com/tasks/getTasks", { params: { adminId } });
+        const response = await axios.post("https://todzilla-backend.onrender.com/tasks/getTasks", { adminId });
         return response;
     } catch (error) {
         console.error(error);
@@ -114,7 +114,7 @@ export async function deleteCompletedTasks({ adminId, userId }) {
 
 export async function getVisitor({ username }) {
     try {
-        const response = await axios.get("https://todzilla-backend.onrender.com/login/getVisitor", { params: { username } });
+        const response = await axios.post("https://todzilla-backend.onrender.com/login/getVisitor", { username });
         return response;
     } catch (error) {
         console.error(error);
