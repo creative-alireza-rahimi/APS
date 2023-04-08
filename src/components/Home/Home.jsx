@@ -8,7 +8,7 @@ import { getUserName } from "../../Tools/getUserName";
 import { useSelector } from 'react-redux';
 import { getTasks, getVisitor } from "../../API/API";
 import { FailedMessage } from "./FailedMessage";
-import { readData } from '../../Tools/localActions';
+import { readData, updateKeyObject } from '../../Tools/localActions';
 import {
     CssBaseline,
     Container,
@@ -48,6 +48,7 @@ export const Home = () => {
                     const completedTasks = [];
                     const normalTasks = [];
 
+                    updateKeyObject("user", "tasks", tasksArray?.data)
                     tasksArray?.data?.map(taskArray => {
                         if (taskArray?.isCompleted) completedTasks.push(taskArray);
                         else normalTasks.push(taskArray)
