@@ -8,6 +8,7 @@ import { Language } from "../../Form/Language";
 import { NotificationSnackbar } from "../../Form/NotificationSnackbar";
 import { newAdmin } from "../../API/API";
 import { splitFullName } from "../../Tools/splitFullName";
+import { saveData } from "../../Tools/localActions";
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { isAuth } from '../authSlice';
@@ -68,6 +69,7 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
             dispatch(isAuth())
             setIsLoading(false)
 
+            saveData("user", admin.data)
             dispatch(getMember(admin.data))
         }
     }
