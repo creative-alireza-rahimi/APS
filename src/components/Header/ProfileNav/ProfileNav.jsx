@@ -103,14 +103,14 @@ export const ProfileNav = () => {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 {user?.isAdmin &&
-                    <>
+                    <Box>
                         <MenuItem>
                             <Avatar src={adminArray?.profilePhoto} />
                             Profile
                         </MenuItem>
 
                         <Divider />
-                    </>
+                    </Box>
                 }
 
                 <MenuItem
