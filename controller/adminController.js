@@ -60,10 +60,10 @@ const getVisitor = async (req, res) => {
       members: {
         $elemMatch: {
           $or: [{
-            linkedIn: `https://www.linkedin.com/in/${username}`,
+            linkedIn: username,
 
           }, {
-            github: `https://github.com/${username}`
+            github: username
           }
           ]
         }
