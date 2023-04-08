@@ -1,6 +1,6 @@
-const uuidV4 = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid');
 
-const randomId = () => uuidV4();
+const randomId = () => uuidv4();
 
 module.exports = {
     randomId
