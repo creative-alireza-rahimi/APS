@@ -84,8 +84,8 @@ const getVisitor = async (req, res) => {
       }
     });
 
-    const adminId = searchedAdmin?.at(0)?._id?.toString();
-    const visitor = searchedVisitor?.at(0)?.members?.at(0)
+    const adminId = searchedAdmin[0]?._id?.toString();
+    const visitor = searchedVisitor[0]?.members?.[0]
 
     if (!visitor) return res.status(204).json({ message: "No visitor found" });
     if (!adminId) return res.status(204).json({ message: "No admin found" });
@@ -203,7 +203,7 @@ const createAdmin = async (req, res) => {
 // @route - PUT '/admins'
 // @access - public
 const updateAdmin = async (req, res) => {
-  const { id, title, age, linkedIn, github, skill, language, isAdmin } =
+  const { id, title, age, linkedIn, github, skills, language, isAdmin } =
     req?.body;
   if (!id) return res.status(400).json({ message: "Id parameter is required" });
 
@@ -218,7 +218,7 @@ const updateAdmin = async (req, res) => {
     if (req.body?.age) admin.age = age;
     if (req.body?.linkedIn) admin.linkedIn = linkedIn;
     if (req.body?.github) admin.github = github;
-    if (req.body?.skill) admin.skill = skill;
+    if (req.body?.skill) admin.skills = skills;
     if (req.body?.language) admin.language = language;
     if (req.body?.isAdmin) admin.isAdmin = isAdmin;
 
