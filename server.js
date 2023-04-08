@@ -12,6 +12,9 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 
 app.use("/", routes);
 app.use("/admin", routes);
+app.use("/tasks", routes);
+app.use("/history", routes);
+app.use("/login", routes);
 
 const PORT = process.env.PORT || 5000;
 
