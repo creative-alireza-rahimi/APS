@@ -126,8 +126,8 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
                         type="text"
                         fullWidth
                         variant="standard"
-                        error={fullName.trim().split(" ").length >=2 ? false : true}
-                        helperText={fullName.trim().split(" ").length >=2 ? "" : "Enter your Full Name"}
+                        error={fullName.trim().split(" ").length >= 2 ? false : true}
+                        helperText={fullName.trim().split(" ").length >= 2 ? "" : "Enter your Full Name"}
                         onChange={handleForm}
                     />
                     <TextField
@@ -209,6 +209,14 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
                     Back
                 </Button>
                 <Button
+                    disabled={
+                        !(skills.length >= 2 && skills.length <= 5) ||
+                        !(language.length === 1) ||
+                        !Boolean(linkedIn) || !Boolean(github) ||
+                        !Boolean(email) || !Boolean(password) ||
+                        !(fullName.trim().split(" ").length >= 2) ||
+                        !(age >= 16 && age <= 50)
+                    }
                     onClick={() => {
                         handleNewAdmin();
                     }}>

@@ -103,8 +103,8 @@ export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
               type="text"
               fullWidth
               variant="standard"
-              error={fullName ? false : true}
-              helperText={fullName ? "" : "Enter your Full Name"}
+              error={fullName.trim().split(" ").length >= 2 ? false : true}
+              helperText={fullName.trim().split(" ").length >= 2 ? "" : "Enter your Full Name"}
               onChange={handleForm}
             />
             <TextField
@@ -160,9 +160,17 @@ export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialog}>Cancel</Button>
-          <Button onClick={() => {
-            handleNewMember();
-          }}>
+          <Button
+            disabled={
+              !(skills.length >= 2 && skills.length <= 5) ||
+              !(language.length === 1) ||
+              !Boolean(linkedIn) || !Boolean(github) ||
+              !(fullName.trim().split(" ").length >= 2) ||
+              !(age >= 16 && age <= 50)
+            }
+            onClick={() => {
+              handleNewMember();
+            }}>
             Add Member
           </Button>
         </DialogActions>
