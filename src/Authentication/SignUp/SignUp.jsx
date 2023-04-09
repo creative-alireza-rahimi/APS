@@ -126,8 +126,8 @@ export const SignUp = ({ openForm, OpenSignUp, AuthDialog }) => {
                         type="text"
                         fullWidth
                         variant="standard"
-                        error={fullName ? false : true}
-                        helperText={fullName ? "" : "Enter your Full Name"}
+                        error={fullName.trim().split(" ").length >=2 ? false : true}
+                        helperText={fullName.trim().split(" ").length >=2 ? "" : "Enter your Full Name"}
                         onChange={handleForm}
                     />
                     <TextField
