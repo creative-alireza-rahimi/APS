@@ -4,7 +4,6 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import PersonIcon from '@mui/icons-material/Person';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import TranslateIcon from '@mui/icons-material/Translate';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
@@ -25,7 +24,6 @@ import {
 } from '@mui/material';
 
 export const CardMember = ({ members }) => {
-
   const [tasks, setTasks] = useState([]);
   const [openTasksDialog, setOpenTasksDialog] = useState(false);
 
@@ -44,10 +42,13 @@ export const CardMember = ({ members }) => {
 
   return (
     <Stack
-      direction="row"
-      flexWrap="wrap"
-      justifyContent="space-between"
-      sx={{ margin: '3rem 0' }}>
+      sx={{
+        margin: '3rem 0',
+        display:  "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-evenly",
+      }}>
       {members?.map(member => (
         <Card sx={{ maxWidth: 330, minWidth: 320, margin: "1rem 0.6rem", minHeight: 220 }} key={member?.fullName} raised={true}>
           <CardHeader
