@@ -1,12 +1,14 @@
 
 import { useState, useEffect } from 'react';
 import { getHistory } from "../../../API/API";
+import { readData } from '../../../Tools/localActions';
 import PropTypes from 'prop-types';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import { Loading } from "../Loading";
 import {
     Box,
     Table,
@@ -129,9 +131,10 @@ export const ListOfModifications = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [modifications, setModifications] = useState([])
+    const userData = readData('user');
 
     useEffect(() => {
-        getHistory().then(histories => {
+        getHistory({ adminId: userData?.adminId }).then(histories => {
             setModifications(histories?.data)
         })
     }, [])
@@ -157,70 +160,72 @@ export const ListOfModifications = () => {
 
     return (
         <Box sx={{ width: '100%', marginBottom: "3rem" }}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar />
-                <TableContainer>
-                    <Table
-                        sx={{ minWidth: 750 }}
-                        aria-labelledby="tableTitle"
-                    >
-                        <EnhancedTableHead
-                            order={order}
-                            orderBy={orderBy}
-                            onRequestSort={handleRequestSort}
-                        />
-                        <TableBody>
+            {modifications?.length ?
+                <Paper sx={{ width: '100%', mb: 2 }}>
+                    <EnhancedTableToolbar />
+                    <TableContainer>
+                        <Table
+                            sx={{ minWidth: 750 }}
+                            aria-labelledby="tableTitle"
+                        >
+                            <EnhancedTableHead
+                                order={order}
+                                orderBy={orderBy}
+                                onRequestSort={handleRequestSort}
+                            />
+                            <TableBody>
 
-                            {modifications?.slice().sort(getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((modification, index) => {
-                                    const labelId = `enhanced-table-checkbox-${index}`;
+                                {modifications?.slice().sort(getComparator(order, orderBy))
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((modification, index) => {
+                                        const labelId = `enhanced-table-checkbox-${index}`;
 
-                                    return (
-                                        <TableRow
-                                            hover
-                                            tabIndex={-1}
-                                            key={modification?.modificationId}
-                                        >
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                align="center"
-                                                padding="checkbox"
+                                        return (
+                                            <TableRow
+                                                hover
+                                                tabIndex={-1}
+                                                key={modification?.modificationId}
                                             >
-                                                {
-                                                    modification?.type.includes('delete') ?
-                                                        <HighlightOffIcon color="error" /> : modification?.type === 'edit' ?
-                                                            <PublishedWithChangesIcon color="primary" /> : modification?.type === "complete" ?
-                                                                <CheckCircleOutlineIcon color="success" /> : modification?.type === "revert" ?
-                                                                    <SettingsBackupRestoreIcon color="warning"/> : <AddCircleOutlineIcon color="primary" />
-                                                }
-                                            </TableCell>
-                                            <TableCell align="left">{modification?.members[0]?.fullName}</TableCell>
-                                            <TableCell align="left">{modification?.title}</TableCell>
-                                            <TableCell align="left">{modification?.date}</TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={modifications.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
+                                                <TableCell
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                    align="center"
+                                                    padding="checkbox"
+                                                >
+                                                    {
+                                                        modification?.type.includes('delete') ?
+                                                            <HighlightOffIcon color="error" /> : modification?.type === 'edit' ?
+                                                                <PublishedWithChangesIcon color="primary" /> : modification?.type === "complete" ?
+                                                                    <CheckCircleOutlineIcon color="success" /> : modification?.type === "revert" ?
+                                                                        <SettingsBackupRestoreIcon color="warning" /> : <AddCircleOutlineIcon color="primary" />
+                                                    }
+                                                </TableCell>
+                                                <TableCell align="left">{modification?.members[0]?.fullName}</TableCell>
+                                                <TableCell align="left">{modification?.title}</TableCell>
+                                                <TableCell align="left">{modification?.date}</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                {emptyRows > 0 && (
+                                    <TableRow>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={modifications.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </Paper>
+                : <Loading />}
         </Box>
     );
 }
