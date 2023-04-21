@@ -30,7 +30,7 @@ const router = express.Router();
 // History
 router
   .route("/history/getHistory")
-  .get(getHistory)
+  .post(getHistory)
 
 // Task
 router
