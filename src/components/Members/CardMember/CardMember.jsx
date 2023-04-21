@@ -19,18 +19,26 @@ import {
   Chip,
   Typography,
   Divider,
-  Tooltip
+  Tooltip,
+  Button,
+  Box
 } from '@mui/material';
 
 export const CardMember = ({ members }) => {
-  const [openTasksDialog, setOpenTasksDialog] = useState(false);
-  const [tasks, setTasks] = useState([]);
 
-  function handleTasksDialog(tasks) {
-    setTasks(tasks)
+  const [tasks, setTasks] = useState([]);
+  const [openTasksDialog, setOpenTasksDialog] = useState(false);
+
+  function handleTasksDialog(memberId) {
+    const tasksList = [];
+    userTasks?.map((task, i) => (
+      task?.members?.map(taskMember => {
+        if (taskMember?.memberId === memberId) tasksList.push(task)
+      })))
+
+    setTasks(tasksList)
     setOpenTasksDialog(openTasksDialog => !openTasksDialog)
   }
-
   const user = readData("user");
   const userTasks = user?.tasks?.filter(task => !task?.isDeleted);
 
@@ -40,7 +48,7 @@ export const CardMember = ({ members }) => {
       flexWrap="wrap"
       justifyContent="space-between"
       sx={{ margin: '3rem 0' }}>
-      {members[0]?.members?.map(member => (
+      {members?.map(member => (
         <Card sx={{ maxWidth: 330, minWidth: 320, margin: "1rem 0.6rem", minHeight: 220 }} key={member?.fullName} raised={true}>
           <CardHeader
             avatar={
@@ -115,20 +123,26 @@ export const CardMember = ({ members }) => {
             <Divider variant="middle" sx={{ margin: "1rem 0" }} />
 
             <Stack direction="row" flexWrap="wrap" alignItems="center" sx={{ marginTop: '1rem' }}>
-              <Tooltip title="Tasks">
-                <AssignmentOutlinedIcon fontSize="large" color="primary" sx={{ marginRight: '0.8rem' }} />
-              </Tooltip>
+              {Number(userTasks?.some(task => {
+                let sum = 0;
+                task?.members?.map(taskMember => {
+                  if (taskMember?.memberId === member?.memberId) sum += 1;
+                })
+                return sum;
+              })) === 0 ? <Box>This Member has no tasks.</Box> :
+                <Button
+                  variant="outlined"
+                  startIcon={<AssignmentOutlinedIcon fontSize="large" color="primary" sx={{ marginRight: '0.8rem' }} />}
+                  onClick={() => handleTasksDialog(member?.memberId)}
+                  sx={{ width: "100%" }}>
+                  VIEW TASKS
+                </Button>}
 
-              {userTasks?.map((task, i) => (
-                i < 3 && task?.members?.some(taskMember => taskMember?.memberId === member?.memberId) &&
-                <Chip key={i} label={task?.title} size="small" color={task?.isCompleted ? "success" : "error"} sx={{ borderRadius: "1px", margin: "0.2rem", width: "fit-content" }} />
-              ))}
-              
-              {userTasks?.map((task, i) => (
-                task?.members?.map(taskMember => taskMember?.memberId === member?.memberId).length > 3 &&
-                <Chip label={<MoreHorizIcon sx={{ paddingTop: "0.4rem" }} />} sx={{ height: "1.6rem" }} onClick={() => handleTasksDialog(userTasks)} />
-              ))}
-              {openTasksDialog && <TasksDialog open={openTasksDialog} handleTasksDialog={handleTasksDialog} tasks={userTasks} />}
+              {openTasksDialog &&
+                <TasksDialog
+                  open={openTasksDialog}
+                  handleTasksDialog={handleTasksDialog}
+                  tasks={tasks} />}
             </Stack>
           </CardContent>
         </Card>))}
