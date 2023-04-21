@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 
 export const Home = () => {
-    const members = useSelector(state => state.members)
+    const membersObj = useSelector(state => state.members)
 
     const [localUser, _] = useState(readData("user"));
     const [hasComplete, setHasComplete] = useState([])
@@ -27,7 +27,11 @@ export const Home = () => {
     const [tasks, setTasks] = useState([]);
     const [isReq, setIsReq] = useState(false);
     const [isError, setIsError] = useState(true);
-    const { adminId } = members?.at(0);
+    const [members, setMembers] = useState();
+
+    useEffect(() => {
+        setMembers(membersObj?.at(0)?.members?.length ? membersObj?.at(0) : localUser)
+    }, [localUser, membersObj])
 
     function handleAddDialog() {
         setOpenAdd(openAdd => !openAdd)
@@ -40,31 +44,27 @@ export const Home = () => {
     useEffect(() => {
         setTasks([]);
         setHasComplete([]);
-        localUser?.isAdmin ?
-            getTasks({ adminId })
-                .then(tasksArray => {
-                    setIsError(false);
 
+        localUser?.isAdmin ?
+            getTasks({ adminId: members?.adminId })
+                .then(tasksArray => {
                     const completedTasks = [];
                     const normalTasks = [];
 
                     updateKeyObject("user", "tasks", tasksArray?.data)
-                    tasksArray?.data?.map(taskArray => {
-                        if (taskArray?.isCompleted) completedTasks.push(taskArray);
-                        else normalTasks.push(taskArray)
-                    })
+                    tasksArray?.data?.map(taskArray =>
+                        taskArray?.isCompleted ? completedTasks.push(taskArray) : normalTasks.push(taskArray)
+                    )
 
                     setTasks(normalTasks?.reverse())
                     setHasComplete(completedTasks?.reverse())
 
-
+                    setIsError(false);
                 }) : getVisitor({
                     username:
                         getUserName(localUser?.github) &&
                         getUserName(localUser?.linkedIn)
                 }).then(visitorObj => {
-                    setIsError(false);
-
                     const completedTasks = [];
                     const normalTasks = [];
 
@@ -75,9 +75,11 @@ export const Home = () => {
 
                     setTasks(normalTasks?.reverse())
                     setHasComplete(completedTasks?.reverse())
+
+                    setIsError(false);
                 })
 
-    }, [isReq])
+    }, [isReq, members])
 
     return (
         <>
@@ -85,7 +87,7 @@ export const Home = () => {
             <Container>
                 <Stack justifyContent="space-between" alignItems="center" spacing={3}>
                     <Stack direction="row" flexWrap="wrap" alignItems="center">
-                        {members?.at(0)?.members?.map(member =>
+                        {members?.members?.map(member =>
                             <Avatar
                                 key={member?.memberId}
                                 alt={member?.fullName}
@@ -106,7 +108,7 @@ export const Home = () => {
                     <Stack direction="row" justifyContent="space-between" sx={{ width: "100%" }}>
                         <Stack direction="row">
                             {localUser?.isAdmin && <AddTasks isReq={setIsReq} openAdd={openAdd} handleAddDialog={handleAddDialog} errorMessage={handleErrorMessage} />}
-                            <DeleteTasks title="Tasks" adminId={adminId} isReq={setIsReq} />
+                            <DeleteTasks title="Tasks" adminId={members?.adminId} isReq={setIsReq} />
                         </Stack>
                         <TotalTasks total={tasks?.length + hasComplete?.length} />
                     </Stack>
@@ -124,7 +126,7 @@ export const Home = () => {
                         updateTasks={setTasks}
                         isReq={setIsReq}
                         errorMessage={handleErrorMessage}
-                        adminId={adminId} />
+                        adminId={members?.adminId} />
 
                     {hasComplete.length > 0 &&
                         <>
@@ -132,7 +134,7 @@ export const Home = () => {
                                 <Chip label="COMPLETED TASKS" />
                             </Divider>
 
-                            <DeleteCompletedTasks title="Completed Tasks" adminId={adminId} isReq={setIsReq} errorMessage={handleErrorMessage} />
+                            <DeleteCompletedTasks title="Completed Tasks" adminId={members?.adminId} isReq={setIsReq} errorMessage={handleErrorMessage} />
 
                             <Tasks
                                 complete
@@ -140,7 +142,7 @@ export const Home = () => {
                                 updateTasks={setTasks}
                                 isReq={setIsReq}
                                 errorMessage={handleErrorMessage}
-                                adminId={adminId} />
+                                adminId={members?.adminId} />
                         </>
                     }
                     {(!tasks?.length && !hasComplete?.length) && <FailedMessage err={isError} />}
