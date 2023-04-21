@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SearchBox } from "../../Form/SearchBox/SearchBox";
 import { AddMember } from "./AddMember/AddMember";
 import { CardMember } from "./CardMember/CardMember";
 import { includesStrings } from "../../Tools/includesStrings";
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
+import { readData } from "../../Tools/localActions";
 import {
     CssBaseline,
     Container,
@@ -11,9 +12,14 @@ import {
 } from '@mui/material';
 
 export const Members = () => {
-    const members = useSelector((state) => state.members)
-    
+    const membersObj = useSelector((state) => state.members)
+
     const [search, setSearch] = useState("");
+    const [members, setmembers] = useState();
+
+    useEffect(() => {
+        setmembers(membersObj?.at(0)?.members?.length ? membersObj?.at(0)?.members : readData("user")?.members)
+    }, [])
 
     return (
         <>
@@ -35,68 +41,3 @@ export const Members = () => {
         </>
     )
 }
-
-// const fakeMembers = [
-//     {
-//         fullName: "Alireza Rahimi",
-//         isAdmin: true,
-//         age: 23,
-//         linkedIn: "creativealireza",
-//         github: "creativealireza",
-//         tasks: [
-//             { title: "wake up", isCompleted: true },
-//             { title: "eat shit", isCompleted: false },
-//             { title: "fuck off", isCompleted: true }]
-//     },
-//     {
-//         fullName: "ehsan",
-//         isAdmin: false,
-//         age: 23,
-//         linkedIn: "creativealireza",
-//         github: "creativealireza",
-//         tasks: [
-//             { title: "wake up", isCompleted: false },
-//             { title: "eat shit", isCompleted: true },
-//             { title: "fuck off2", isCompleted: false },
-//             { title: "fuck off", isCompleted: true },
-//             { title: "fuck offhgj", isCompleted: true },
-//             { title: "fuck ofghjf", isCompleted: false },
-//             { title: "fuck offghj", isCompleted: false }
-//         ]
-//     },
-//     {
-//         fullName: "erfan",
-//         isAdmin: false,
-//         age: 23,
-//         linkedIn: "creativealireza",
-//         github: "creativealireza",
-//         tasks: [
-//             { title: "wake up", isCompleted: false },
-//             { title: "eat shit", isCompleted: true },
-//             { title: "fuck off", isCompleted: false }]
-//     },
-//     {
-//         fullName: "sara",
-//         isAdmin: false,
-//         age: 23,
-//         linkedIn: "creativealireza",
-//         github: "creativealireza",
-//         tasks: [
-//             { title: "wake up", isCompleted: false },
-//             { title: "wake usp", isCompleted: false },
-//             { title: "wake usssp", isCompleted: false },
-//             { title: "eat shit", isCompleted: false },
-//             { title: "fuck off", isCompleted: true }]
-//     },
-//     {
-//         fullName: "zahra",
-//         isAdmin: false,
-//         age: 23,
-//         linkedIn: "creativealireza",
-//         github: "creativealireza",
-//         tasks: [
-//             { title: "wake up", isCompleted: false },
-//             { title: "eat shit", isCompleted: true },
-//             { title: "fuck off", isCompleted: false }]
-//     },
-// ];
