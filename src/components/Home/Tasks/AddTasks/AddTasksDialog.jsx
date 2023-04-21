@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AddTextarea } from "./AddTextarea";
 import { AddMembers } from "./AddMembers";
 import { newTask } from "../../../../API/API";
 import { useSelector } from 'react-redux';
+import { readData } from '../../../../Tools/localActions';
 import {
     Button,
     Dialog,
@@ -15,12 +16,19 @@ import {
 } from '@mui/material';
 
 export const AddTasksDialog = ({ modalStatus, handleAddDialog, isReq, errorMessage }) => {
-    const taskMembers = useSelector(state => state.members)
+    const taskMembersObj = useSelector(state => state.members)
 
     const [isLoading, setIsLoading] = useState(false);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [selectedMembers, setSelectedMembers] = useState([]);
+    const [localUser, _] = useState(readData("user"));
+    const [members, setMembers] = useState()
+
+    useEffect(() => {
+        setMembers(taskMembersObj?.members?.length ? taskMembersObj : localUser)
+    }, [])
+    
 
     function handleTitle(e) {
         setTitle(e.target.value)
@@ -36,7 +44,7 @@ export const AddTasksDialog = ({ modalStatus, handleAddDialog, isReq, errorMessa
             title,
             description,
             members: selectedMembers,
-            adminId: taskMembers?.at(0)?.adminId,
+            adminId: members?.adminId,
             isCompleted: false,
             isEdited: false,
             isDeleted: false,
@@ -83,7 +91,7 @@ export const AddTasksDialog = ({ modalStatus, handleAddDialog, isReq, errorMessa
                 <AddTextarea setDescription={handleDescription} />
 
                 <AddMembers
-                    members={taskMembers?.at(0)?.members}
+                    members={members?.members}
                     selectMembers={{ value: selectedMembers, setValue: setSelectedMembers }} />
             </DialogContent>
             <DialogActions>
