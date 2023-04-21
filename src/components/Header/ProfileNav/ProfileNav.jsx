@@ -105,7 +105,7 @@ export const ProfileNav = () => {
                 {user?.isAdmin &&
                     <Box>
                         <MenuItem>
-                            <Avatar src={adminArray?.profilePhoto} />
+                            <Avatar src={adminArray?.profilePhoto || user?.profilePhoto} />
                             Profile
                         </MenuItem>
 
