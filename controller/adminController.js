@@ -16,7 +16,7 @@ const getAllAdmins = async (req, res) => {
 };
 
 // @desc - all admin
-// @route - GET '/admins'
+// @route - GET '/login/getAdmin'
 // @access - public
 const getAdmin = async (req, res) => {
   const { email, password } = req?.body;
