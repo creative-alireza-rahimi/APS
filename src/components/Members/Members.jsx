@@ -19,7 +19,7 @@ export const Members = () => {
 
     useEffect(() => {
         setmembers(membersObj?.at(0)?.members?.length ? membersObj?.at(0)?.members : readData("user")?.members)
-    }, [])
+    }, [membersObj])
 
     return (
         <>
@@ -32,10 +32,7 @@ export const Members = () => {
                     </Stack>
                     {members &&
                         <CardMember
-                            members={
-                                search ?
-                                    members.filter(member => includesStrings(member.fullName, search)) :
-                                    members} />}
+                            members={members} />}
                 </Stack>
             </Container>
         </>
