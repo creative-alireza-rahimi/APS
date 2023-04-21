@@ -124,9 +124,9 @@ export async function getVisitor({ username }) {
 }
 
 // History
-export async function getHistory() {
+export async function getHistory({adminId}) {
     try {
-        const response = await axios.get(`${BACKEND_URL}/history/getHistory`);
+        const response = await axios.post(`${BACKEND_URL}/history/getHistory`, {adminId});
         return response;
     } catch (error) {
         console.error(error);
