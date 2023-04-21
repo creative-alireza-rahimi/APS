@@ -6,6 +6,7 @@ import { splitFullName } from "../../../../Tools/splitFullName";
 import { UploadProfileImage } from "../../../../Form/UploadProfileImage";
 import { newMember } from "../../MembersSlice";
 import { useDispatch, useSelector } from 'react-redux';
+import { readData, updateKeyObject } from "../../../../Tools/localActions";
 import {
   Button,
   TextField,
@@ -21,7 +22,7 @@ import {
 
 export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
   const admin = useSelector((state) => state.members)
-  const { adminId } = admin[0]
+  const adminId = admin[0]?.adminId ? admin[0]?.adminId : readData("user")?.adminId;
 
   const [imagePreview, setImagePreview] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -54,6 +55,7 @@ export const AddMemberModal = ({ dialogStatus, handleDialog }) => {
 
     if (member.status === 200) {
       dispatch(newMember(member.data))
+      updateKeyObject("user", "members", member?.data?.members)
 
       setIsLoading(false)
       handleDialog();
