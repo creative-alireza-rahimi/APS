@@ -52,6 +52,7 @@ const createTask = async (req, res) => {
         title: req?.body?.title,
         type: "create",
         date: new Date().toLocaleString(),
+        adminId: adminId,
         members: [{
           fullName: admin?.fullName,
           age: admin?.age,
@@ -103,6 +104,7 @@ const editTask = async (req, res) => {
         title: req?.body?.title,
         type: "edit",
         date: new Date().toLocaleString(),
+        adminId: editedTask?.adminId,
         members: [{
           fullName: admin?.fullName,
           age: admin?.age,
@@ -181,6 +183,7 @@ const completeTask = async (req, res) => {
         history.push({
           title: task?.title,
           type: 'complete',
+          adminId: adminId,
           date: new Date().toLocaleString(),
           members: task?.members?.filter(member => member?.memberId === userId),
         })
@@ -255,6 +258,7 @@ const revertTask = async (req, res) => {
         history.push({
           title: task?.title,
           type: 'revert',
+          adminId: adminId,
           date: new Date().toLocaleString(),
           members: task?.members?.filter(member => member?.memberId === userId),
         })
@@ -328,6 +332,7 @@ const deleteAllTasks = async (req, res) => {
       {
         title: 'All Tasks',
         type: 'deleteAll',
+        adminId: adminId,
         date: new Date().toLocaleString(),
         members: admin?.members?.filter(member => member?.memberId === userId),
       }
@@ -364,8 +369,8 @@ const deleteAllTasks = async (req, res) => {
   }
 };
 
-// @desc - delete all task
-// @route - PUT '/tasks/deleteAllTasks'
+// @desc - delete all commpleted task
+// @route - PUT '/tasks/deleteCompletedTasks'
 // @access - public
 const deleteCompletedTasks = async (req, res) => {
   const { adminId, userId } = req?.body;
@@ -376,16 +381,17 @@ const deleteCompletedTasks = async (req, res) => {
     if (!admin)
       return res.status(204).json({ message: `no matches admin with id:${adminId}` });
 
-      const historyObj = new History(
-        {
-          title: 'All Completed Tasks',
-          type: 'deleteAllCompleted',
-          date: new Date().toLocaleString(),
-          members: admin?.members?.filter(member => member?.memberId === userId),
-        }
-      );
-  
-      await historyObj.save();
+    const historyObj = new History(
+      {
+        title: 'All Completed Tasks',
+        type: 'deleteAllCompleted',
+        adminId: adminId,
+        date: new Date().toLocaleString(),
+        members: admin?.members?.filter(member => member?.memberId === userId),
+      }
+    );
+
+    await historyObj.save();
 
     admin?.tasks
       ?.forEach(task => {
@@ -451,6 +457,7 @@ const deleteTask = async (req, res) => {
         history.push({
           title: task?.title,
           type: 'deleteOne',
+          adminId: adminId,
           date: new Date().toLocaleString(),
           members: task?.members?.filter(member => member?.memberId === userId),
         })
