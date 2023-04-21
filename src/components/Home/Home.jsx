@@ -51,8 +51,8 @@ export const Home = () => {
                     const completedTasks = [];
                     const normalTasks = [];
 
-                    updateKeyObject("user", "tasks", tasksArray?.data)
-                    tasksArray?.data?.map(taskArray =>
+                    updateKeyObject("user", "tasks", tasksArray?.data && tasksArray?.data)
+                    tasksArray?.data && tasksArray?.data?.map(taskArray =>
                         taskArray?.isCompleted ? completedTasks.push(taskArray) : normalTasks.push(taskArray)
                     )
 
