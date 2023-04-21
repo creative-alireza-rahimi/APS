@@ -12,7 +12,7 @@ import {
     DialogTitle,
 } from '@mui/material';
 
-export const Authentication = ({ isAuth, Auth }) => {
+export const Authentication = ({ isAuth }) => {
     const [openSignUp, setOpenSignUp] = useState(false);
     const [openLoginVisitor, setOpenLoginVisitor] = useState(false);
     const [openLoginAdmin, setOpenLoginAdmin] = useState(false);
