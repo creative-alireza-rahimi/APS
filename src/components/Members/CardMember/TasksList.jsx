@@ -7,7 +7,6 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 export const TasksList = React.memo(
     ({ tasks }) => {
-        console.log(tasks);
         return (
             <List sx={{ maxHeight: 300 }}>
                 {tasks?.map((task, i) => (<ListItem>
